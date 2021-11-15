@@ -5,6 +5,8 @@ This is the public release of the code of our paper titled "Noncompliance as Dev
 Please note that the concerned vendors are still in the process of patching the identified vulnerabilities. Upon request from the vendors, we are not releasing the modified cellular stack used in the FSM Inference module of our framework at this moment. We have, however, provided a sample adapter and a sample device code with the original statelearner to test the learner code and generate a finite state machine of the device. 
 We will release the 4G LTE adapter once all the vendors confirm the completion of the responsible disclosure process. Apart from this, we are completely open-sourcing the equivalence checker with two FSMs extracted from two COTS devices (anonymized).
 
+The paper: https://dl.acm.org/doi/pdf/10.1145/3460120.3485388
+
 **Table of Contents**
 
 - [Introduction](#introduction)
