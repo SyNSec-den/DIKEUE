@@ -1,0 +1,86 @@
+Nov 15, 2021 3:42:38 AM lte.statelearner.Learner <init>
+INFO: Using LTE-UE SUL
+Nov 15, 2021 3:42:38 AM lte.statelearner.Learner learn
+INFO: Using learning algorithm TTTLearnerMealy
+Nov 15, 2021 3:42:38 AM lte.statelearner.Learner learn
+INFO: Using equivalence algorithm MealyWpMethodEQOracle
+Nov 15, 2021 3:42:38 AM lte.statelearner.Learner learn
+INFO: Starting learning
+Nov 15, 2021 3:42:38 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 1
+Nov 15, 2021 3:46:35 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text / RRC_con_req RRC_connection_setup_complete]
+Nov 15, 2021 3:46:35 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 2
+Nov 15, 2021 3:48:01 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach RRC_connection_setup_plain_text / RRC_con_req RRC_connection_setup_complete attach_request null_action]
+Nov 15, 2021 3:48:01 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 3
+Nov 15, 2021 3:49:53 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_RRC_con enable_attach / RRC_con_req RRC_connection_setup_complete RRC_con_req attach_request]
+Nov 15, 2021 3:49:53 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 4
+Nov 15, 2021 3:56:57 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach identity_request_plain_text enable_attach / RRC_con_req RRC_connection_setup_complete attach_request identity_response attach_request]
+Nov 15, 2021 3:56:57 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 5
+Nov 15, 2021 3:58:46 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_RRC_con enable_attach identity_request_plain_text / RRC_con_req RRC_connection_setup_complete RRC_con_req attach_request identity_response]
+Nov 15, 2021 3:58:46 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 6
+Nov 15, 2021 4:44:15 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected enable_attach / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete attach_request]
+Nov 15, 2021 4:44:15 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 7
+Nov 15, 2021 4:47:22 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach enable_RRC_con auth_request_plain_text sm_command_protected / RRC_con_req RRC_connection_setup_complete attach_request RRC_con_req auth_response sm_complete]
+Nov 15, 2021 4:47:22 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 8
+Nov 15, 2021 4:52:11 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected sm_command_protected / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete sm_complete]
+Nov 15, 2021 4:52:11 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 9
+Nov 15, 2021 4:57:26 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text enable_RRC_con sm_command_protected sm_command_protected / RRC_con_req RRC_connection_setup_complete attach_request auth_response RRC_con_req sm_complete sm_complete]
+Nov 15, 2021 4:57:26 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 10
+Nov 15, 2021 5:25:48 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected attach_accept_protected enable_attach sm_command_protected / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete attach_complete attach_request sm_complete]
+Nov 15, 2021 5:25:48 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 11
+Nov 15, 2021 5:35:08 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected enable_RRC_con attach_accept_protected attach_accept_protected / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete RRC_con_req attach_complete null_action]
+Nov 15, 2021 5:35:08 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 12
+Nov 15, 2021 6:14:13 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected tau_accept_protected enable_attach sm_command_protected / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete null_action attach_request sm_reject]
+Nov 15, 2021 6:14:13 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 13
+Nov 15, 2021 6:29:42 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected enable_RRC_con tau_accept_protected enable_tau / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete RRC_con_req null_action null_action]
+Nov 15, 2021 6:29:42 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 14
+Nov 15, 2021 7:25:10 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected attach_accept_protected enable_attach enable_attach sm_command_protected / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete attach_complete attach_request attach_request sm_complete]
+Nov 15, 2021 7:25:10 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 15
+Nov 15, 2021 8:24:34 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected attach_accept_protected tau_accept_protected enable_attach identity_request_plain_text / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete attach_complete null_action attach_request null_action]
+Nov 15, 2021 8:24:34 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 16
+Nov 15, 2021 8:31:17 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected attach_accept_protected tau_accept_protected enable_attach enable_attach identity_request_plain_text / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete attach_complete null_action attach_request attach_request null_action]
+Nov 15, 2021 8:31:17 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 17
+Nov 15, 2021 8:48:27 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected attach_accept_protected enable_attach tau_accept_protected sm_command_protected enable_attach identity_request_plain_text / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete attach_complete attach_request null_action sm_complete attach_request null_action]
+Nov 15, 2021 8:48:27 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 18
+Nov 15, 2021 8:57:11 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected attach_accept_protected enable_attach sm_command_protected enable_attach identity_request_plain_text / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete attach_complete attach_request sm_complete attach_request identity_response]
+Nov 15, 2021 8:57:11 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 19
+Nov 15, 2021 9:27:30 AM de.learnlib.logging.LearnLogger logCounterexample
+INFO: Counter-example found: Query[ε|enable_RRC_con RRC_connection_setup_plain_text enable_attach auth_request_plain_text sm_command_protected attach_accept_protected tau_accept_protected enable_tau enable_attach identity_request_plain_text / RRC_con_req RRC_connection_setup_complete attach_request auth_response sm_complete attach_complete null_action tau_request attach_request null_action]
+Nov 15, 2021 9:27:30 AM de.learnlib.logging.LearnLogger logPhase
+INFO: Starting round 20

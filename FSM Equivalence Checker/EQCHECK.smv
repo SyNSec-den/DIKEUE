@@ -1,0 +1,864 @@
+MODULE main
+
+------------------- Environment, State, and Input variables --------------------
+
+VAR
+
+input	:
+{	enable_attach,
+	auth_request_plain,
+	security_mode_command,
+	attach_accept,
+	rrc_security_mode_command,
+	rrc_reconf,
+	GUTI_reallocation,
+	tau_accept,
+	paging_tmsi,
+	GUTI_reallocation_plain,
+	rrc_security_mode_command_downgraded,
+	attach_accept_no_integrity,
+	security_mode_command_no_integrity,
+	security_mode_command_plain,
+	tau_accept_plain,
+	dl_nas_transport,
+	dl_nas_transport_plain,
+	identity_request_plain,
+	auth_request_replay,
+	security_mode_command_replay,
+	GUTI_reallocation_replay,
+	rrc_reconf_replay,
+	rrc_release_tau,
+	rrc_release
+};	
+
+---------------- state for UE_NAS1 state machine ----------------
+
+ue_nas1_state	:
+{
+	s0,
+	s1,
+	s2,
+	s3,
+	s4,
+	s5,
+	s6,
+	s7,
+	s8,
+	s9,
+	s10,
+	s11,
+	s12,
+	s13,
+	s14,
+	s15,
+	s16,
+	s17,
+	s18,
+	s19,
+	s20
+};
+
+---------------- state for UE_NAS2 state machine ----------------
+
+ue_nas2_state	:
+{
+	s0,
+	s1,
+	s2,
+	s3,
+	s4,
+	s5,
+	s6,
+	s7,
+	s8,
+	s9,
+	s10,
+	s11,
+	s12,
+	s13,
+	s14,
+	s15,
+	s16,
+	s17,
+	s18,
+	s19,
+	s20,
+	s21,
+	s22,
+	s23,
+	s24
+};
+------------ Possible UE_NAS1 actions ----------------
+
+ue_nas1_action	:
+{
+	attach_request,
+	auth_response,
+	security_mode_reject,
+	null_action,
+	identity_response,
+	security_mode_complete,
+	attach_complete,
+	rrc_security_mode_complete,
+	auth_failure_seq,
+	GUTI_reallocation_complete,
+	ul_nas_transport,
+	rrc_reconf_complete,
+	tau_request
+};
+------------ Possible UE_NAS2 actions ----------------
+
+ue_nas2_action	:
+{
+	attach_request,
+	auth_response,
+	security_mode_reject,
+	null_action,
+	identity_response,
+	security_mode_complete,
+	rrc_security_mode_complete,
+	auth_failure_seq,
+	rrc_reconf_complete
+};
+
+
+DEFINE
+
+-----------------UE_NAS1 transitions --------------------
+UE_NAS1_T1	:=	 (ue_nas1_state = s0 & input = enable_attach)	;
+UE_NAS1_T25	:=	 (ue_nas1_state = s1 & input = enable_attach)	;
+UE_NAS1_T26	:=	 (ue_nas1_state = s1 & input = auth_request_plain)	;
+UE_NAS1_T27	:=	 (ue_nas1_state = s1 & input = security_mode_command)	;
+UE_NAS1_T30	:=	 (ue_nas1_state = s1 & input = rrc_reconf)	;
+UE_NAS1_T37	:=	 (ue_nas1_state = s1 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T42	:=	 (ue_nas1_state = s1 & input = identity_request_plain)	;
+UE_NAS1_T46	:=	 (ue_nas1_state = s1 & input = rrc_reconf_replay)	;
+UE_NAS1_T47	:=	 (ue_nas1_state = s1 & input = rrc_release_tau)	;
+UE_NAS1_T48	:=	 (ue_nas1_state = s1 & input = rrc_release)	;
+UE_NAS1_T49	:=	 (ue_nas1_state = s2 & input = enable_attach)	;
+UE_NAS1_T50	:=	 (ue_nas1_state = s2 & input = auth_request_plain)	;
+UE_NAS1_T51	:=	 (ue_nas1_state = s2 & input = security_mode_command)	;
+UE_NAS1_T54	:=	 (ue_nas1_state = s2 & input = rrc_reconf)	;
+UE_NAS1_T61	:=	 (ue_nas1_state = s2 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T66	:=	 (ue_nas1_state = s2 & input = identity_request_plain)	;
+UE_NAS1_T67	:=	 (ue_nas1_state = s2 & input = auth_request_replay)	;
+UE_NAS1_T70	:=	 (ue_nas1_state = s2 & input = rrc_reconf_replay)	;
+UE_NAS1_T71	:=	 (ue_nas1_state = s2 & input = rrc_release_tau)	;
+UE_NAS1_T72	:=	 (ue_nas1_state = s2 & input = rrc_release)	;
+UE_NAS1_T73	:=	 (ue_nas1_state = s3 & input = enable_attach)	;
+UE_NAS1_T74	:=	 (ue_nas1_state = s3 & input = auth_request_plain)	;
+UE_NAS1_T75	:=	 (ue_nas1_state = s3 & input = security_mode_command)	;
+UE_NAS1_T76	:=	 (ue_nas1_state = s3 & input = attach_accept)	;
+UE_NAS1_T77	:=	 (ue_nas1_state = s3 & input = rrc_security_mode_command)	;
+UE_NAS1_T78	:=	 (ue_nas1_state = s3 & input = rrc_reconf)	;
+UE_NAS1_T79	:=	 (ue_nas1_state = s3 & input = GUTI_reallocation)	;
+UE_NAS1_T80	:=	 (ue_nas1_state = s3 & input = tau_accept)	;
+UE_NAS1_T85	:=	 (ue_nas1_state = s3 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T88	:=	 (ue_nas1_state = s3 & input = dl_nas_transport)	;
+UE_NAS1_T90	:=	 (ue_nas1_state = s3 & input = identity_request_plain)	;
+UE_NAS1_T91	:=	 (ue_nas1_state = s3 & input = auth_request_replay)	;
+UE_NAS1_T92	:=	 (ue_nas1_state = s3 & input = security_mode_command_replay)	;
+UE_NAS1_T94	:=	 (ue_nas1_state = s3 & input = rrc_reconf_replay)	;
+UE_NAS1_T95	:=	 (ue_nas1_state = s3 & input = rrc_release_tau)	;
+UE_NAS1_T96	:=	 (ue_nas1_state = s3 & input = rrc_release)	;
+UE_NAS1_T97	:=	 (ue_nas1_state = s4 & input = enable_attach)	;
+UE_NAS1_T98	:=	 (ue_nas1_state = s4 & input = auth_request_plain)	;
+UE_NAS1_T99	:=	 (ue_nas1_state = s4 & input = security_mode_command)	;
+UE_NAS1_T100	:=	 (ue_nas1_state = s4 & input = attach_accept)	;
+UE_NAS1_T101	:=	 (ue_nas1_state = s4 & input = rrc_security_mode_command)	;
+UE_NAS1_T102	:=	 (ue_nas1_state = s4 & input = rrc_reconf)	;
+UE_NAS1_T109	:=	 (ue_nas1_state = s4 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T110	:=	 (ue_nas1_state = s4 & input = security_mode_command_plain)	;
+UE_NAS1_T114	:=	 (ue_nas1_state = s4 & input = identity_request_plain)	;
+UE_NAS1_T115	:=	 (ue_nas1_state = s4 & input = auth_request_replay)	;
+UE_NAS1_T116	:=	 (ue_nas1_state = s4 & input = security_mode_command_replay)	;
+UE_NAS1_T118	:=	 (ue_nas1_state = s4 & input = rrc_reconf_replay)	;
+UE_NAS1_T119	:=	 (ue_nas1_state = s4 & input = rrc_release_tau)	;
+UE_NAS1_T120	:=	 (ue_nas1_state = s4 & input = rrc_release)	;
+UE_NAS1_T121	:=	 (ue_nas1_state = s5 & input = enable_attach)	;
+UE_NAS1_T122	:=	 (ue_nas1_state = s5 & input = auth_request_plain)	;
+UE_NAS1_T123	:=	 (ue_nas1_state = s5 & input = security_mode_command)	;
+UE_NAS1_T124	:=	 (ue_nas1_state = s5 & input = attach_accept)	;
+UE_NAS1_T125	:=	 (ue_nas1_state = s5 & input = rrc_security_mode_command)	;
+UE_NAS1_T126	:=	 (ue_nas1_state = s5 & input = rrc_reconf)	;
+UE_NAS1_T127	:=	 (ue_nas1_state = s5 & input = GUTI_reallocation)	;
+UE_NAS1_T128	:=	 (ue_nas1_state = s5 & input = tau_accept)	;
+UE_NAS1_T130	:=	 (ue_nas1_state = s5 & input = GUTI_reallocation_plain)	;
+UE_NAS1_T132	:=	 (ue_nas1_state = s5 & input = attach_accept_no_integrity)	;
+UE_NAS1_T133	:=	 (ue_nas1_state = s5 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T135	:=	 (ue_nas1_state = s5 & input = tau_accept_plain)	;
+UE_NAS1_T136	:=	 (ue_nas1_state = s5 & input = dl_nas_transport)	;
+UE_NAS1_T137	:=	 (ue_nas1_state = s5 & input = dl_nas_transport_plain)	;
+UE_NAS1_T138	:=	 (ue_nas1_state = s5 & input = identity_request_plain)	;
+UE_NAS1_T139	:=	 (ue_nas1_state = s5 & input = auth_request_replay)	;
+UE_NAS1_T140	:=	 (ue_nas1_state = s5 & input = security_mode_command_replay)	;
+UE_NAS1_T142	:=	 (ue_nas1_state = s5 & input = rrc_reconf_replay)	;
+UE_NAS1_T143	:=	 (ue_nas1_state = s5 & input = rrc_release_tau)	;
+UE_NAS1_T144	:=	 (ue_nas1_state = s5 & input = rrc_release)	;
+UE_NAS1_T145	:=	 (ue_nas1_state = s6 & input = enable_attach)	;
+UE_NAS1_T146	:=	 (ue_nas1_state = s6 & input = auth_request_plain)	;
+UE_NAS1_T147	:=	 (ue_nas1_state = s6 & input = security_mode_command)	;
+UE_NAS1_T149	:=	 (ue_nas1_state = s6 & input = rrc_security_mode_command)	;
+UE_NAS1_T150	:=	 (ue_nas1_state = s6 & input = rrc_reconf)	;
+UE_NAS1_T157	:=	 (ue_nas1_state = s6 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T160	:=	 (ue_nas1_state = s6 & input = dl_nas_transport)	;
+UE_NAS1_T162	:=	 (ue_nas1_state = s6 & input = identity_request_plain)	;
+UE_NAS1_T163	:=	 (ue_nas1_state = s6 & input = auth_request_replay)	;
+UE_NAS1_T164	:=	 (ue_nas1_state = s6 & input = security_mode_command_replay)	;
+UE_NAS1_T166	:=	 (ue_nas1_state = s6 & input = rrc_reconf_replay)	;
+UE_NAS1_T167	:=	 (ue_nas1_state = s6 & input = rrc_release_tau)	;
+UE_NAS1_T168	:=	 (ue_nas1_state = s6 & input = rrc_release)	;
+UE_NAS1_T169	:=	 (ue_nas1_state = s7 & input = enable_attach)	;
+UE_NAS1_T170	:=	 (ue_nas1_state = s7 & input = auth_request_plain)	;
+UE_NAS1_T171	:=	 (ue_nas1_state = s7 & input = security_mode_command)	;
+UE_NAS1_T173	:=	 (ue_nas1_state = s7 & input = rrc_security_mode_command)	;
+UE_NAS1_T174	:=	 (ue_nas1_state = s7 & input = rrc_reconf)	;
+UE_NAS1_T175	:=	 (ue_nas1_state = s7 & input = GUTI_reallocation)	;
+UE_NAS1_T181	:=	 (ue_nas1_state = s7 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T182	:=	 (ue_nas1_state = s7 & input = security_mode_command_plain)	;
+UE_NAS1_T184	:=	 (ue_nas1_state = s7 & input = dl_nas_transport)	;
+UE_NAS1_T186	:=	 (ue_nas1_state = s7 & input = identity_request_plain)	;
+UE_NAS1_T187	:=	 (ue_nas1_state = s7 & input = auth_request_replay)	;
+UE_NAS1_T188	:=	 (ue_nas1_state = s7 & input = security_mode_command_replay)	;
+UE_NAS1_T190	:=	 (ue_nas1_state = s7 & input = rrc_reconf_replay)	;
+UE_NAS1_T191	:=	 (ue_nas1_state = s7 & input = rrc_release_tau)	;
+UE_NAS1_T192	:=	 (ue_nas1_state = s7 & input = rrc_release)	;
+UE_NAS1_T193	:=	 (ue_nas1_state = s8 & input = enable_attach)	;
+UE_NAS1_T194	:=	 (ue_nas1_state = s8 & input = auth_request_plain)	;
+UE_NAS1_T195	:=	 (ue_nas1_state = s8 & input = security_mode_command)	;
+UE_NAS1_T196	:=	 (ue_nas1_state = s8 & input = attach_accept)	;
+UE_NAS1_T197	:=	 (ue_nas1_state = s8 & input = rrc_security_mode_command)	;
+UE_NAS1_T198	:=	 (ue_nas1_state = s8 & input = rrc_reconf)	;
+UE_NAS1_T199	:=	 (ue_nas1_state = s8 & input = GUTI_reallocation)	;
+UE_NAS1_T200	:=	 (ue_nas1_state = s8 & input = tau_accept)	;
+UE_NAS1_T202	:=	 (ue_nas1_state = s8 & input = GUTI_reallocation_plain)	;
+UE_NAS1_T204	:=	 (ue_nas1_state = s8 & input = attach_accept_no_integrity)	;
+UE_NAS1_T205	:=	 (ue_nas1_state = s8 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T207	:=	 (ue_nas1_state = s8 & input = tau_accept_plain)	;
+UE_NAS1_T208	:=	 (ue_nas1_state = s8 & input = dl_nas_transport)	;
+UE_NAS1_T209	:=	 (ue_nas1_state = s8 & input = dl_nas_transport_plain)	;
+UE_NAS1_T210	:=	 (ue_nas1_state = s8 & input = identity_request_plain)	;
+UE_NAS1_T211	:=	 (ue_nas1_state = s8 & input = auth_request_replay)	;
+UE_NAS1_T212	:=	 (ue_nas1_state = s8 & input = security_mode_command_replay)	;
+UE_NAS1_T214	:=	 (ue_nas1_state = s8 & input = rrc_reconf_replay)	;
+UE_NAS1_T215	:=	 (ue_nas1_state = s8 & input = rrc_release_tau)	;
+UE_NAS1_T216	:=	 (ue_nas1_state = s8 & input = rrc_release)	;
+UE_NAS1_T217	:=	 (ue_nas1_state = s9 & input = enable_attach)	;
+UE_NAS1_T218	:=	 (ue_nas1_state = s9 & input = auth_request_plain)	;
+UE_NAS1_T219	:=	 (ue_nas1_state = s9 & input = security_mode_command)	;
+UE_NAS1_T220	:=	 (ue_nas1_state = s9 & input = attach_accept)	;
+UE_NAS1_T222	:=	 (ue_nas1_state = s9 & input = rrc_reconf)	;
+UE_NAS1_T223	:=	 (ue_nas1_state = s9 & input = GUTI_reallocation)	;
+UE_NAS1_T224	:=	 (ue_nas1_state = s9 & input = tau_accept)	;
+UE_NAS1_T227	:=	 (ue_nas1_state = s9 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS1_T229	:=	 (ue_nas1_state = s9 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T232	:=	 (ue_nas1_state = s9 & input = dl_nas_transport)	;
+UE_NAS1_T234	:=	 (ue_nas1_state = s9 & input = identity_request_plain)	;
+UE_NAS1_T235	:=	 (ue_nas1_state = s9 & input = auth_request_replay)	;
+UE_NAS1_T236	:=	 (ue_nas1_state = s9 & input = security_mode_command_replay)	;
+UE_NAS1_T238	:=	 (ue_nas1_state = s9 & input = rrc_reconf_replay)	;
+UE_NAS1_T239	:=	 (ue_nas1_state = s9 & input = rrc_release_tau)	;
+UE_NAS1_T240	:=	 (ue_nas1_state = s9 & input = rrc_release)	;
+UE_NAS1_T241	:=	 (ue_nas1_state = s10 & input = enable_attach)	;
+UE_NAS1_T242	:=	 (ue_nas1_state = s10 & input = auth_request_plain)	;
+UE_NAS1_T243	:=	 (ue_nas1_state = s10 & input = security_mode_command)	;
+UE_NAS1_T246	:=	 (ue_nas1_state = s10 & input = rrc_reconf)	;
+UE_NAS1_T247	:=	 (ue_nas1_state = s10 & input = GUTI_reallocation)	;
+UE_NAS1_T251	:=	 (ue_nas1_state = s10 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS1_T253	:=	 (ue_nas1_state = s10 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T254	:=	 (ue_nas1_state = s10 & input = security_mode_command_plain)	;
+UE_NAS1_T256	:=	 (ue_nas1_state = s10 & input = dl_nas_transport)	;
+UE_NAS1_T258	:=	 (ue_nas1_state = s10 & input = identity_request_plain)	;
+UE_NAS1_T259	:=	 (ue_nas1_state = s10 & input = auth_request_replay)	;
+UE_NAS1_T260	:=	 (ue_nas1_state = s10 & input = security_mode_command_replay)	;
+UE_NAS1_T262	:=	 (ue_nas1_state = s10 & input = rrc_reconf_replay)	;
+UE_NAS1_T263	:=	 (ue_nas1_state = s10 & input = rrc_release_tau)	;
+UE_NAS1_T264	:=	 (ue_nas1_state = s10 & input = rrc_release)	;
+UE_NAS1_T265	:=	 (ue_nas1_state = s11 & input = enable_attach)	;
+UE_NAS1_T266	:=	 (ue_nas1_state = s11 & input = auth_request_plain)	;
+UE_NAS1_T267	:=	 (ue_nas1_state = s11 & input = security_mode_command)	;
+UE_NAS1_T270	:=	 (ue_nas1_state = s11 & input = rrc_reconf)	;
+UE_NAS1_T275	:=	 (ue_nas1_state = s11 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS1_T277	:=	 (ue_nas1_state = s11 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T282	:=	 (ue_nas1_state = s11 & input = identity_request_plain)	;
+UE_NAS1_T283	:=	 (ue_nas1_state = s11 & input = auth_request_replay)	;
+UE_NAS1_T284	:=	 (ue_nas1_state = s11 & input = security_mode_command_replay)	;
+UE_NAS1_T286	:=	 (ue_nas1_state = s11 & input = rrc_reconf_replay)	;
+UE_NAS1_T287	:=	 (ue_nas1_state = s11 & input = rrc_release_tau)	;
+UE_NAS1_T288	:=	 (ue_nas1_state = s11 & input = rrc_release)	;
+UE_NAS1_T289	:=	 (ue_nas1_state = s12 & input = enable_attach)	;
+UE_NAS1_T290	:=	 (ue_nas1_state = s12 & input = auth_request_plain)	;
+UE_NAS1_T291	:=	 (ue_nas1_state = s12 & input = security_mode_command)	;
+UE_NAS1_T292	:=	 (ue_nas1_state = s12 & input = attach_accept)	;
+UE_NAS1_T294	:=	 (ue_nas1_state = s12 & input = rrc_reconf)	;
+UE_NAS1_T295	:=	 (ue_nas1_state = s12 & input = GUTI_reallocation)	;
+UE_NAS1_T296	:=	 (ue_nas1_state = s12 & input = tau_accept)	;
+UE_NAS1_T298	:=	 (ue_nas1_state = s12 & input = GUTI_reallocation_plain)	;
+UE_NAS1_T299	:=	 (ue_nas1_state = s12 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS1_T300	:=	 (ue_nas1_state = s12 & input = attach_accept_no_integrity)	;
+UE_NAS1_T301	:=	 (ue_nas1_state = s12 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T303	:=	 (ue_nas1_state = s12 & input = tau_accept_plain)	;
+UE_NAS1_T304	:=	 (ue_nas1_state = s12 & input = dl_nas_transport)	;
+UE_NAS1_T305	:=	 (ue_nas1_state = s12 & input = dl_nas_transport_plain)	;
+UE_NAS1_T306	:=	 (ue_nas1_state = s12 & input = identity_request_plain)	;
+UE_NAS1_T307	:=	 (ue_nas1_state = s12 & input = auth_request_replay)	;
+UE_NAS1_T308	:=	 (ue_nas1_state = s12 & input = security_mode_command_replay)	;
+UE_NAS1_T310	:=	 (ue_nas1_state = s12 & input = rrc_reconf_replay)	;
+UE_NAS1_T311	:=	 (ue_nas1_state = s12 & input = rrc_release_tau)	;
+UE_NAS1_T312	:=	 (ue_nas1_state = s12 & input = rrc_release)	;
+UE_NAS1_T313	:=	 (ue_nas1_state = s13 & input = enable_attach)	;
+UE_NAS1_T314	:=	 (ue_nas1_state = s13 & input = auth_request_plain)	;
+UE_NAS1_T315	:=	 (ue_nas1_state = s13 & input = security_mode_command)	;
+UE_NAS1_T316	:=	 (ue_nas1_state = s13 & input = attach_accept)	;
+UE_NAS1_T318	:=	 (ue_nas1_state = s13 & input = rrc_reconf)	;
+UE_NAS1_T323	:=	 (ue_nas1_state = s13 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS1_T325	:=	 (ue_nas1_state = s13 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T326	:=	 (ue_nas1_state = s13 & input = security_mode_command_plain)	;
+UE_NAS1_T330	:=	 (ue_nas1_state = s13 & input = identity_request_plain)	;
+UE_NAS1_T331	:=	 (ue_nas1_state = s13 & input = auth_request_replay)	;
+UE_NAS1_T332	:=	 (ue_nas1_state = s13 & input = security_mode_command_replay)	;
+UE_NAS1_T334	:=	 (ue_nas1_state = s13 & input = rrc_reconf_replay)	;
+UE_NAS1_T335	:=	 (ue_nas1_state = s13 & input = rrc_release_tau)	;
+UE_NAS1_T336	:=	 (ue_nas1_state = s13 & input = rrc_release)	;
+UE_NAS1_T337	:=	 (ue_nas1_state = s14 & input = enable_attach)	;
+UE_NAS1_T338	:=	 (ue_nas1_state = s14 & input = auth_request_plain)	;
+UE_NAS1_T339	:=	 (ue_nas1_state = s14 & input = security_mode_command)	;
+UE_NAS1_T340	:=	 (ue_nas1_state = s14 & input = attach_accept)	;
+UE_NAS1_T342	:=	 (ue_nas1_state = s14 & input = rrc_reconf)	;
+UE_NAS1_T343	:=	 (ue_nas1_state = s14 & input = GUTI_reallocation)	;
+UE_NAS1_T344	:=	 (ue_nas1_state = s14 & input = tau_accept)	;
+UE_NAS1_T346	:=	 (ue_nas1_state = s14 & input = GUTI_reallocation_plain)	;
+UE_NAS1_T347	:=	 (ue_nas1_state = s14 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS1_T348	:=	 (ue_nas1_state = s14 & input = attach_accept_no_integrity)	;
+UE_NAS1_T349	:=	 (ue_nas1_state = s14 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T351	:=	 (ue_nas1_state = s14 & input = tau_accept_plain)	;
+UE_NAS1_T352	:=	 (ue_nas1_state = s14 & input = dl_nas_transport)	;
+UE_NAS1_T353	:=	 (ue_nas1_state = s14 & input = dl_nas_transport_plain)	;
+UE_NAS1_T354	:=	 (ue_nas1_state = s14 & input = identity_request_plain)	;
+UE_NAS1_T355	:=	 (ue_nas1_state = s14 & input = auth_request_replay)	;
+UE_NAS1_T356	:=	 (ue_nas1_state = s14 & input = security_mode_command_replay)	;
+UE_NAS1_T358	:=	 (ue_nas1_state = s14 & input = rrc_reconf_replay)	;
+UE_NAS1_T359	:=	 (ue_nas1_state = s14 & input = rrc_release_tau)	;
+UE_NAS1_T360	:=	 (ue_nas1_state = s14 & input = rrc_release)	;
+UE_NAS1_T361	:=	 (ue_nas1_state = s15 & input = enable_attach)	;
+UE_NAS1_T362	:=	 (ue_nas1_state = s15 & input = auth_request_plain)	;
+UE_NAS1_T363	:=	 (ue_nas1_state = s15 & input = security_mode_command)	;
+UE_NAS1_T366	:=	 (ue_nas1_state = s15 & input = rrc_reconf)	;
+UE_NAS1_T371	:=	 (ue_nas1_state = s15 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS1_T373	:=	 (ue_nas1_state = s15 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T378	:=	 (ue_nas1_state = s15 & input = identity_request_plain)	;
+UE_NAS1_T379	:=	 (ue_nas1_state = s15 & input = auth_request_replay)	;
+UE_NAS1_T380	:=	 (ue_nas1_state = s15 & input = security_mode_command_replay)	;
+UE_NAS1_T382	:=	 (ue_nas1_state = s15 & input = rrc_reconf_replay)	;
+UE_NAS1_T383	:=	 (ue_nas1_state = s15 & input = rrc_release_tau)	;
+UE_NAS1_T384	:=	 (ue_nas1_state = s15 & input = rrc_release)	;
+UE_NAS1_T385	:=	 (ue_nas1_state = s16 & input = enable_attach)	;
+UE_NAS1_T386	:=	 (ue_nas1_state = s16 & input = auth_request_plain)	;
+UE_NAS1_T387	:=	 (ue_nas1_state = s16 & input = security_mode_command)	;
+UE_NAS1_T388	:=	 (ue_nas1_state = s16 & input = attach_accept)	;
+UE_NAS1_T389	:=	 (ue_nas1_state = s16 & input = rrc_security_mode_command)	;
+UE_NAS1_T390	:=	 (ue_nas1_state = s16 & input = rrc_reconf)	;
+UE_NAS1_T391	:=	 (ue_nas1_state = s16 & input = GUTI_reallocation)	;
+UE_NAS1_T392	:=	 (ue_nas1_state = s16 & input = tau_accept)	;
+UE_NAS1_T395	:=	 (ue_nas1_state = s16 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS1_T397	:=	 (ue_nas1_state = s16 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T400	:=	 (ue_nas1_state = s16 & input = dl_nas_transport)	;
+UE_NAS1_T402	:=	 (ue_nas1_state = s16 & input = identity_request_plain)	;
+UE_NAS1_T403	:=	 (ue_nas1_state = s16 & input = auth_request_replay)	;
+UE_NAS1_T404	:=	 (ue_nas1_state = s16 & input = security_mode_command_replay)	;
+UE_NAS1_T406	:=	 (ue_nas1_state = s16 & input = rrc_reconf_replay)	;
+UE_NAS1_T407	:=	 (ue_nas1_state = s16 & input = rrc_release_tau)	;
+UE_NAS1_T408	:=	 (ue_nas1_state = s16 & input = rrc_release)	;
+UE_NAS1_T409	:=	 (ue_nas1_state = s17 & input = enable_attach)	;
+UE_NAS1_T410	:=	 (ue_nas1_state = s17 & input = auth_request_plain)	;
+UE_NAS1_T411	:=	 (ue_nas1_state = s17 & input = security_mode_command)	;
+UE_NAS1_T412	:=	 (ue_nas1_state = s17 & input = attach_accept)	;
+UE_NAS1_T413	:=	 (ue_nas1_state = s17 & input = rrc_security_mode_command)	;
+UE_NAS1_T414	:=	 (ue_nas1_state = s17 & input = rrc_reconf)	;
+UE_NAS1_T415	:=	 (ue_nas1_state = s17 & input = GUTI_reallocation)	;
+UE_NAS1_T416	:=	 (ue_nas1_state = s17 & input = tau_accept)	;
+UE_NAS1_T417	:=	 (ue_nas1_state = s17 & input = paging_tmsi)	;
+UE_NAS1_T418	:=	 (ue_nas1_state = s17 & input = GUTI_reallocation_plain)	;
+UE_NAS1_T420	:=	 (ue_nas1_state = s17 & input = attach_accept_no_integrity)	;
+UE_NAS1_T421	:=	 (ue_nas1_state = s17 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T422	:=	 (ue_nas1_state = s17 & input = security_mode_command_plain)	;
+UE_NAS1_T423	:=	 (ue_nas1_state = s17 & input = tau_accept_plain)	;
+UE_NAS1_T424	:=	 (ue_nas1_state = s17 & input = dl_nas_transport)	;
+UE_NAS1_T425	:=	 (ue_nas1_state = s17 & input = dl_nas_transport_plain)	;
+UE_NAS1_T426	:=	 (ue_nas1_state = s17 & input = identity_request_plain)	;
+UE_NAS1_T427	:=	 (ue_nas1_state = s17 & input = auth_request_replay)	;
+UE_NAS1_T428	:=	 (ue_nas1_state = s17 & input = security_mode_command_replay)	;
+UE_NAS1_T429	:=	 (ue_nas1_state = s17 & input = GUTI_reallocation_replay)	;
+UE_NAS1_T430	:=	 (ue_nas1_state = s17 & input = rrc_reconf_replay)	;
+UE_NAS1_T431	:=	 (ue_nas1_state = s17 & input = rrc_release_tau)	;
+UE_NAS1_T432	:=	 (ue_nas1_state = s17 & input = rrc_release)	;
+UE_NAS1_T433	:=	 (ue_nas1_state = s18 & input = enable_attach)	;
+UE_NAS1_T434	:=	 (ue_nas1_state = s18 & input = auth_request_plain)	;
+UE_NAS1_T435	:=	 (ue_nas1_state = s18 & input = security_mode_command)	;
+UE_NAS1_T436	:=	 (ue_nas1_state = s18 & input = attach_accept)	;
+UE_NAS1_T438	:=	 (ue_nas1_state = s18 & input = rrc_reconf)	;
+UE_NAS1_T439	:=	 (ue_nas1_state = s18 & input = GUTI_reallocation)	;
+UE_NAS1_T440	:=	 (ue_nas1_state = s18 & input = tau_accept)	;
+UE_NAS1_T441	:=	 (ue_nas1_state = s18 & input = paging_tmsi)	;
+UE_NAS1_T442	:=	 (ue_nas1_state = s18 & input = GUTI_reallocation_plain)	;
+UE_NAS1_T443	:=	 (ue_nas1_state = s18 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS1_T444	:=	 (ue_nas1_state = s18 & input = attach_accept_no_integrity)	;
+UE_NAS1_T445	:=	 (ue_nas1_state = s18 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T446	:=	 (ue_nas1_state = s18 & input = security_mode_command_plain)	;
+UE_NAS1_T447	:=	 (ue_nas1_state = s18 & input = tau_accept_plain)	;
+UE_NAS1_T448	:=	 (ue_nas1_state = s18 & input = dl_nas_transport)	;
+UE_NAS1_T449	:=	 (ue_nas1_state = s18 & input = dl_nas_transport_plain)	;
+UE_NAS1_T450	:=	 (ue_nas1_state = s18 & input = identity_request_plain)	;
+UE_NAS1_T451	:=	 (ue_nas1_state = s18 & input = auth_request_replay)	;
+UE_NAS1_T452	:=	 (ue_nas1_state = s18 & input = security_mode_command_replay)	;
+UE_NAS1_T453	:=	 (ue_nas1_state = s18 & input = GUTI_reallocation_replay)	;
+UE_NAS1_T454	:=	 (ue_nas1_state = s18 & input = rrc_reconf_replay)	;
+UE_NAS1_T455	:=	 (ue_nas1_state = s18 & input = rrc_release_tau)	;
+UE_NAS1_T456	:=	 (ue_nas1_state = s18 & input = rrc_release)	;
+UE_NAS1_T457	:=	 (ue_nas1_state = s19 & input = enable_attach)	;
+UE_NAS1_T458	:=	 (ue_nas1_state = s19 & input = auth_request_plain)	;
+UE_NAS1_T459	:=	 (ue_nas1_state = s19 & input = security_mode_command)	;
+UE_NAS1_T460	:=	 (ue_nas1_state = s19 & input = attach_accept)	;
+UE_NAS1_T461	:=	 (ue_nas1_state = s19 & input = rrc_security_mode_command)	;
+UE_NAS1_T462	:=	 (ue_nas1_state = s19 & input = rrc_reconf)	;
+UE_NAS1_T463	:=	 (ue_nas1_state = s19 & input = GUTI_reallocation)	;
+UE_NAS1_T464	:=	 (ue_nas1_state = s19 & input = tau_accept)	;
+UE_NAS1_T465	:=	 (ue_nas1_state = s19 & input = paging_tmsi)	;
+UE_NAS1_T466	:=	 (ue_nas1_state = s19 & input = GUTI_reallocation_plain)	;
+UE_NAS1_T467	:=	 (ue_nas1_state = s19 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS1_T468	:=	 (ue_nas1_state = s19 & input = attach_accept_no_integrity)	;
+UE_NAS1_T469	:=	 (ue_nas1_state = s19 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T470	:=	 (ue_nas1_state = s19 & input = security_mode_command_plain)	;
+UE_NAS1_T471	:=	 (ue_nas1_state = s19 & input = tau_accept_plain)	;
+UE_NAS1_T472	:=	 (ue_nas1_state = s19 & input = dl_nas_transport)	;
+UE_NAS1_T473	:=	 (ue_nas1_state = s19 & input = dl_nas_transport_plain)	;
+UE_NAS1_T474	:=	 (ue_nas1_state = s19 & input = identity_request_plain)	;
+UE_NAS1_T475	:=	 (ue_nas1_state = s19 & input = auth_request_replay)	;
+UE_NAS1_T476	:=	 (ue_nas1_state = s19 & input = security_mode_command_replay)	;
+UE_NAS1_T477	:=	 (ue_nas1_state = s19 & input = GUTI_reallocation_replay)	;
+UE_NAS1_T478	:=	 (ue_nas1_state = s19 & input = rrc_reconf_replay)	;
+UE_NAS1_T479	:=	 (ue_nas1_state = s19 & input = rrc_release_tau)	;
+UE_NAS1_T481	:=	 (ue_nas1_state = s20 & input = enable_attach)	;
+UE_NAS1_T482	:=	 (ue_nas1_state = s20 & input = auth_request_plain)	;
+UE_NAS1_T483	:=	 (ue_nas1_state = s20 & input = security_mode_command)	;
+UE_NAS1_T484	:=	 (ue_nas1_state = s20 & input = attach_accept)	;
+UE_NAS1_T487	:=	 (ue_nas1_state = s20 & input = GUTI_reallocation)	;
+UE_NAS1_T488	:=	 (ue_nas1_state = s20 & input = tau_accept)	;
+UE_NAS1_T489	:=	 (ue_nas1_state = s20 & input = paging_tmsi)	;
+UE_NAS1_T490	:=	 (ue_nas1_state = s20 & input = GUTI_reallocation_plain)	;
+UE_NAS1_T492	:=	 (ue_nas1_state = s20 & input = attach_accept_no_integrity)	;
+UE_NAS1_T493	:=	 (ue_nas1_state = s20 & input = security_mode_command_no_integrity)	;
+UE_NAS1_T494	:=	 (ue_nas1_state = s20 & input = security_mode_command_plain)	;
+UE_NAS1_T495	:=	 (ue_nas1_state = s20 & input = tau_accept_plain)	;
+UE_NAS1_T496	:=	 (ue_nas1_state = s20 & input = dl_nas_transport)	;
+UE_NAS1_T497	:=	 (ue_nas1_state = s20 & input = dl_nas_transport_plain)	;
+UE_NAS1_T498	:=	 (ue_nas1_state = s20 & input = identity_request_plain)	;
+UE_NAS1_T499	:=	 (ue_nas1_state = s20 & input = auth_request_replay)	;
+UE_NAS1_T500	:=	 (ue_nas1_state = s20 & input = security_mode_command_replay)	;
+UE_NAS1_T501	:=	 (ue_nas1_state = s20 & input = GUTI_reallocation_replay)	;
+UE_NAS1_T503	:=	 (ue_nas1_state = s20 & input = rrc_release_tau)	;
+UE_NAS1_T504	:=	 (ue_nas1_state = s20 & input = rrc_release)	;
+
+-----------------UE_NAS2 transitions --------------------
+UE_NAS2_T1	:=	 (ue_nas2_state = s0 & input = enable_attach)	;
+UE_NAS2_T25	:=	 (ue_nas2_state = s1 & input = enable_attach)	;
+UE_NAS2_T26	:=	 (ue_nas2_state = s1 & input = auth_request_plain)	;
+UE_NAS2_T27	:=	 (ue_nas2_state = s1 & input = security_mode_command)	;
+UE_NAS2_T30	:=	 (ue_nas2_state = s1 & input = rrc_reconf)	;
+UE_NAS2_T37	:=	 (ue_nas2_state = s1 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T38	:=	 (ue_nas2_state = s1 & input = security_mode_command_plain)	;
+UE_NAS2_T42	:=	 (ue_nas2_state = s1 & input = identity_request_plain)	;
+UE_NAS2_T46	:=	 (ue_nas2_state = s1 & input = rrc_reconf_replay)	;
+UE_NAS2_T47	:=	 (ue_nas2_state = s1 & input = rrc_release_tau)	;
+UE_NAS2_T48	:=	 (ue_nas2_state = s1 & input = rrc_release)	;
+UE_NAS2_T49	:=	 (ue_nas2_state = s2 & input = enable_attach)	;
+UE_NAS2_T50	:=	 (ue_nas2_state = s2 & input = auth_request_plain)	;
+UE_NAS2_T51	:=	 (ue_nas2_state = s2 & input = security_mode_command)	;
+UE_NAS2_T54	:=	 (ue_nas2_state = s2 & input = rrc_reconf)	;
+UE_NAS2_T61	:=	 (ue_nas2_state = s2 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T62	:=	 (ue_nas2_state = s2 & input = security_mode_command_plain)	;
+UE_NAS2_T66	:=	 (ue_nas2_state = s2 & input = identity_request_plain)	;
+UE_NAS2_T67	:=	 (ue_nas2_state = s2 & input = auth_request_replay)	;
+UE_NAS2_T70	:=	 (ue_nas2_state = s2 & input = rrc_reconf_replay)	;
+UE_NAS2_T71	:=	 (ue_nas2_state = s2 & input = rrc_release_tau)	;
+UE_NAS2_T72	:=	 (ue_nas2_state = s2 & input = rrc_release)	;
+UE_NAS2_T73	:=	 (ue_nas2_state = s3 & input = enable_attach)	;
+UE_NAS2_T74	:=	 (ue_nas2_state = s3 & input = auth_request_plain)	;
+UE_NAS2_T75	:=	 (ue_nas2_state = s3 & input = security_mode_command)	;
+UE_NAS2_T77	:=	 (ue_nas2_state = s3 & input = rrc_security_mode_command)	;
+UE_NAS2_T78	:=	 (ue_nas2_state = s3 & input = rrc_reconf)	;
+UE_NAS2_T85	:=	 (ue_nas2_state = s3 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T90	:=	 (ue_nas2_state = s3 & input = identity_request_plain)	;
+UE_NAS2_T92	:=	 (ue_nas2_state = s3 & input = security_mode_command_replay)	;
+UE_NAS2_T94	:=	 (ue_nas2_state = s3 & input = rrc_reconf_replay)	;
+UE_NAS2_T95	:=	 (ue_nas2_state = s3 & input = rrc_release_tau)	;
+UE_NAS2_T96	:=	 (ue_nas2_state = s3 & input = rrc_release)	;
+UE_NAS2_T97	:=	 (ue_nas2_state = s4 & input = enable_attach)	;
+UE_NAS2_T98	:=	 (ue_nas2_state = s4 & input = auth_request_plain)	;
+UE_NAS2_T99	:=	 (ue_nas2_state = s4 & input = security_mode_command)	;
+UE_NAS2_T101	:=	 (ue_nas2_state = s4 & input = rrc_security_mode_command)	;
+UE_NAS2_T102	:=	 (ue_nas2_state = s4 & input = rrc_reconf)	;
+UE_NAS2_T109	:=	 (ue_nas2_state = s4 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T114	:=	 (ue_nas2_state = s4 & input = identity_request_plain)	;
+UE_NAS2_T115	:=	 (ue_nas2_state = s4 & input = auth_request_replay)	;
+UE_NAS2_T116	:=	 (ue_nas2_state = s4 & input = security_mode_command_replay)	;
+UE_NAS2_T118	:=	 (ue_nas2_state = s4 & input = rrc_reconf_replay)	;
+UE_NAS2_T119	:=	 (ue_nas2_state = s4 & input = rrc_release_tau)	;
+UE_NAS2_T120	:=	 (ue_nas2_state = s4 & input = rrc_release)	;
+UE_NAS2_T121	:=	 (ue_nas2_state = s5 & input = enable_attach)	;
+UE_NAS2_T122	:=	 (ue_nas2_state = s5 & input = auth_request_plain)	;
+UE_NAS2_T123	:=	 (ue_nas2_state = s5 & input = security_mode_command)	;
+UE_NAS2_T125	:=	 (ue_nas2_state = s5 & input = rrc_security_mode_command)	;
+UE_NAS2_T126	:=	 (ue_nas2_state = s5 & input = rrc_reconf)	;
+UE_NAS2_T133	:=	 (ue_nas2_state = s5 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T138	:=	 (ue_nas2_state = s5 & input = identity_request_plain)	;
+UE_NAS2_T142	:=	 (ue_nas2_state = s5 & input = rrc_reconf_replay)	;
+UE_NAS2_T143	:=	 (ue_nas2_state = s5 & input = rrc_release_tau)	;
+UE_NAS2_T144	:=	 (ue_nas2_state = s5 & input = rrc_release)	;
+UE_NAS2_T145	:=	 (ue_nas2_state = s6 & input = enable_attach)	;
+UE_NAS2_T146	:=	 (ue_nas2_state = s6 & input = auth_request_plain)	;
+UE_NAS2_T147	:=	 (ue_nas2_state = s6 & input = security_mode_command)	;
+UE_NAS2_T149	:=	 (ue_nas2_state = s6 & input = rrc_security_mode_command)	;
+UE_NAS2_T150	:=	 (ue_nas2_state = s6 & input = rrc_reconf)	;
+UE_NAS2_T157	:=	 (ue_nas2_state = s6 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T162	:=	 (ue_nas2_state = s6 & input = identity_request_plain)	;
+UE_NAS2_T163	:=	 (ue_nas2_state = s6 & input = auth_request_replay)	;
+UE_NAS2_T166	:=	 (ue_nas2_state = s6 & input = rrc_reconf_replay)	;
+UE_NAS2_T167	:=	 (ue_nas2_state = s6 & input = rrc_release_tau)	;
+UE_NAS2_T168	:=	 (ue_nas2_state = s6 & input = rrc_release)	;
+UE_NAS2_T169	:=	 (ue_nas2_state = s7 & input = enable_attach)	;
+UE_NAS2_T170	:=	 (ue_nas2_state = s7 & input = auth_request_plain)	;
+UE_NAS2_T171	:=	 (ue_nas2_state = s7 & input = security_mode_command)	;
+UE_NAS2_T173	:=	 (ue_nas2_state = s7 & input = rrc_security_mode_command)	;
+UE_NAS2_T174	:=	 (ue_nas2_state = s7 & input = rrc_reconf)	;
+UE_NAS2_T181	:=	 (ue_nas2_state = s7 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T186	:=	 (ue_nas2_state = s7 & input = identity_request_plain)	;
+UE_NAS2_T187	:=	 (ue_nas2_state = s7 & input = auth_request_replay)	;
+UE_NAS2_T190	:=	 (ue_nas2_state = s7 & input = rrc_reconf_replay)	;
+UE_NAS2_T191	:=	 (ue_nas2_state = s7 & input = rrc_release_tau)	;
+UE_NAS2_T192	:=	 (ue_nas2_state = s7 & input = rrc_release)	;
+UE_NAS2_T193	:=	 (ue_nas2_state = s8 & input = enable_attach)	;
+UE_NAS2_T194	:=	 (ue_nas2_state = s8 & input = auth_request_plain)	;
+UE_NAS2_T195	:=	 (ue_nas2_state = s8 & input = security_mode_command)	;
+UE_NAS2_T197	:=	 (ue_nas2_state = s8 & input = rrc_security_mode_command)	;
+UE_NAS2_T198	:=	 (ue_nas2_state = s8 & input = rrc_reconf)	;
+UE_NAS2_T205	:=	 (ue_nas2_state = s8 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T210	:=	 (ue_nas2_state = s8 & input = identity_request_plain)	;
+UE_NAS2_T211	:=	 (ue_nas2_state = s8 & input = auth_request_replay)	;
+UE_NAS2_T214	:=	 (ue_nas2_state = s8 & input = rrc_reconf_replay)	;
+UE_NAS2_T215	:=	 (ue_nas2_state = s8 & input = rrc_release_tau)	;
+UE_NAS2_T216	:=	 (ue_nas2_state = s8 & input = rrc_release)	;
+UE_NAS2_T217	:=	 (ue_nas2_state = s9 & input = enable_attach)	;
+UE_NAS2_T218	:=	 (ue_nas2_state = s9 & input = auth_request_plain)	;
+UE_NAS2_T219	:=	 (ue_nas2_state = s9 & input = security_mode_command)	;
+UE_NAS2_T221	:=	 (ue_nas2_state = s9 & input = rrc_security_mode_command)	;
+UE_NAS2_T222	:=	 (ue_nas2_state = s9 & input = rrc_reconf)	;
+UE_NAS2_T229	:=	 (ue_nas2_state = s9 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T234	:=	 (ue_nas2_state = s9 & input = identity_request_plain)	;
+UE_NAS2_T235	:=	 (ue_nas2_state = s9 & input = auth_request_replay)	;
+UE_NAS2_T236	:=	 (ue_nas2_state = s9 & input = security_mode_command_replay)	;
+UE_NAS2_T238	:=	 (ue_nas2_state = s9 & input = rrc_reconf_replay)	;
+UE_NAS2_T239	:=	 (ue_nas2_state = s9 & input = rrc_release_tau)	;
+UE_NAS2_T240	:=	 (ue_nas2_state = s9 & input = rrc_release)	;
+UE_NAS2_T241	:=	 (ue_nas2_state = s10 & input = enable_attach)	;
+UE_NAS2_T242	:=	 (ue_nas2_state = s10 & input = auth_request_plain)	;
+UE_NAS2_T243	:=	 (ue_nas2_state = s10 & input = security_mode_command)	;
+UE_NAS2_T245	:=	 (ue_nas2_state = s10 & input = rrc_security_mode_command)	;
+UE_NAS2_T246	:=	 (ue_nas2_state = s10 & input = rrc_reconf)	;
+UE_NAS2_T253	:=	 (ue_nas2_state = s10 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T258	:=	 (ue_nas2_state = s10 & input = identity_request_plain)	;
+UE_NAS2_T259	:=	 (ue_nas2_state = s10 & input = auth_request_replay)	;
+UE_NAS2_T260	:=	 (ue_nas2_state = s10 & input = security_mode_command_replay)	;
+UE_NAS2_T262	:=	 (ue_nas2_state = s10 & input = rrc_reconf_replay)	;
+UE_NAS2_T263	:=	 (ue_nas2_state = s10 & input = rrc_release_tau)	;
+UE_NAS2_T264	:=	 (ue_nas2_state = s10 & input = rrc_release)	;
+UE_NAS2_T265	:=	 (ue_nas2_state = s11 & input = enable_attach)	;
+UE_NAS2_T266	:=	 (ue_nas2_state = s11 & input = auth_request_plain)	;
+UE_NAS2_T267	:=	 (ue_nas2_state = s11 & input = security_mode_command)	;
+UE_NAS2_T270	:=	 (ue_nas2_state = s11 & input = rrc_reconf)	;
+UE_NAS2_T275	:=	 (ue_nas2_state = s11 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS2_T277	:=	 (ue_nas2_state = s11 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T282	:=	 (ue_nas2_state = s11 & input = identity_request_plain)	;
+UE_NAS2_T283	:=	 (ue_nas2_state = s11 & input = auth_request_replay)	;
+UE_NAS2_T284	:=	 (ue_nas2_state = s11 & input = security_mode_command_replay)	;
+UE_NAS2_T286	:=	 (ue_nas2_state = s11 & input = rrc_reconf_replay)	;
+UE_NAS2_T287	:=	 (ue_nas2_state = s11 & input = rrc_release_tau)	;
+UE_NAS2_T288	:=	 (ue_nas2_state = s11 & input = rrc_release)	;
+UE_NAS2_T289	:=	 (ue_nas2_state = s12 & input = enable_attach)	;
+UE_NAS2_T290	:=	 (ue_nas2_state = s12 & input = auth_request_plain)	;
+UE_NAS2_T291	:=	 (ue_nas2_state = s12 & input = security_mode_command)	;
+UE_NAS2_T294	:=	 (ue_nas2_state = s12 & input = rrc_reconf)	;
+UE_NAS2_T299	:=	 (ue_nas2_state = s12 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS2_T301	:=	 (ue_nas2_state = s12 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T306	:=	 (ue_nas2_state = s12 & input = identity_request_plain)	;
+UE_NAS2_T307	:=	 (ue_nas2_state = s12 & input = auth_request_replay)	;
+UE_NAS2_T308	:=	 (ue_nas2_state = s12 & input = security_mode_command_replay)	;
+UE_NAS2_T310	:=	 (ue_nas2_state = s12 & input = rrc_reconf_replay)	;
+UE_NAS2_T311	:=	 (ue_nas2_state = s12 & input = rrc_release_tau)	;
+UE_NAS2_T312	:=	 (ue_nas2_state = s12 & input = rrc_release)	;
+UE_NAS2_T313	:=	 (ue_nas2_state = s13 & input = enable_attach)	;
+UE_NAS2_T314	:=	 (ue_nas2_state = s13 & input = auth_request_plain)	;
+UE_NAS2_T315	:=	 (ue_nas2_state = s13 & input = security_mode_command)	;
+UE_NAS2_T317	:=	 (ue_nas2_state = s13 & input = rrc_security_mode_command)	;
+UE_NAS2_T318	:=	 (ue_nas2_state = s13 & input = rrc_reconf)	;
+UE_NAS2_T323	:=	 (ue_nas2_state = s13 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS2_T325	:=	 (ue_nas2_state = s13 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T330	:=	 (ue_nas2_state = s13 & input = identity_request_plain)	;
+UE_NAS2_T331	:=	 (ue_nas2_state = s13 & input = auth_request_replay)	;
+UE_NAS2_T332	:=	 (ue_nas2_state = s13 & input = security_mode_command_replay)	;
+UE_NAS2_T334	:=	 (ue_nas2_state = s13 & input = rrc_reconf_replay)	;
+UE_NAS2_T335	:=	 (ue_nas2_state = s13 & input = rrc_release_tau)	;
+UE_NAS2_T336	:=	 (ue_nas2_state = s13 & input = rrc_release)	;
+UE_NAS2_T337	:=	 (ue_nas2_state = s14 & input = enable_attach)	;
+UE_NAS2_T338	:=	 (ue_nas2_state = s14 & input = auth_request_plain)	;
+UE_NAS2_T339	:=	 (ue_nas2_state = s14 & input = security_mode_command)	;
+UE_NAS2_T341	:=	 (ue_nas2_state = s14 & input = rrc_security_mode_command)	;
+UE_NAS2_T342	:=	 (ue_nas2_state = s14 & input = rrc_reconf)	;
+UE_NAS2_T347	:=	 (ue_nas2_state = s14 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS2_T349	:=	 (ue_nas2_state = s14 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T354	:=	 (ue_nas2_state = s14 & input = identity_request_plain)	;
+UE_NAS2_T355	:=	 (ue_nas2_state = s14 & input = auth_request_replay)	;
+UE_NAS2_T356	:=	 (ue_nas2_state = s14 & input = security_mode_command_replay)	;
+UE_NAS2_T358	:=	 (ue_nas2_state = s14 & input = rrc_reconf_replay)	;
+UE_NAS2_T359	:=	 (ue_nas2_state = s14 & input = rrc_release_tau)	;
+UE_NAS2_T360	:=	 (ue_nas2_state = s14 & input = rrc_release)	;
+UE_NAS2_T361	:=	 (ue_nas2_state = s15 & input = enable_attach)	;
+UE_NAS2_T362	:=	 (ue_nas2_state = s15 & input = auth_request_plain)	;
+UE_NAS2_T363	:=	 (ue_nas2_state = s15 & input = security_mode_command)	;
+UE_NAS2_T366	:=	 (ue_nas2_state = s15 & input = rrc_reconf)	;
+UE_NAS2_T371	:=	 (ue_nas2_state = s15 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS2_T373	:=	 (ue_nas2_state = s15 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T378	:=	 (ue_nas2_state = s15 & input = identity_request_plain)	;
+UE_NAS2_T379	:=	 (ue_nas2_state = s15 & input = auth_request_replay)	;
+UE_NAS2_T382	:=	 (ue_nas2_state = s15 & input = rrc_reconf_replay)	;
+UE_NAS2_T383	:=	 (ue_nas2_state = s15 & input = rrc_release_tau)	;
+UE_NAS2_T384	:=	 (ue_nas2_state = s15 & input = rrc_release)	;
+UE_NAS2_T385	:=	 (ue_nas2_state = s16 & input = enable_attach)	;
+UE_NAS2_T386	:=	 (ue_nas2_state = s16 & input = auth_request_plain)	;
+UE_NAS2_T387	:=	 (ue_nas2_state = s16 & input = security_mode_command)	;
+UE_NAS2_T390	:=	 (ue_nas2_state = s16 & input = rrc_reconf)	;
+UE_NAS2_T395	:=	 (ue_nas2_state = s16 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS2_T397	:=	 (ue_nas2_state = s16 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T402	:=	 (ue_nas2_state = s16 & input = identity_request_plain)	;
+UE_NAS2_T403	:=	 (ue_nas2_state = s16 & input = auth_request_replay)	;
+UE_NAS2_T406	:=	 (ue_nas2_state = s16 & input = rrc_reconf_replay)	;
+UE_NAS2_T407	:=	 (ue_nas2_state = s16 & input = rrc_release_tau)	;
+UE_NAS2_T408	:=	 (ue_nas2_state = s16 & input = rrc_release)	;
+UE_NAS2_T409	:=	 (ue_nas2_state = s17 & input = enable_attach)	;
+UE_NAS2_T410	:=	 (ue_nas2_state = s17 & input = auth_request_plain)	;
+UE_NAS2_T411	:=	 (ue_nas2_state = s17 & input = security_mode_command)	;
+UE_NAS2_T413	:=	 (ue_nas2_state = s17 & input = rrc_security_mode_command)	;
+UE_NAS2_T414	:=	 (ue_nas2_state = s17 & input = rrc_reconf)	;
+UE_NAS2_T421	:=	 (ue_nas2_state = s17 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T426	:=	 (ue_nas2_state = s17 & input = identity_request_plain)	;
+UE_NAS2_T427	:=	 (ue_nas2_state = s17 & input = auth_request_replay)	;
+UE_NAS2_T430	:=	 (ue_nas2_state = s17 & input = rrc_reconf_replay)	;
+UE_NAS2_T431	:=	 (ue_nas2_state = s17 & input = rrc_release_tau)	;
+UE_NAS2_T432	:=	 (ue_nas2_state = s17 & input = rrc_release)	;
+UE_NAS2_T433	:=	 (ue_nas2_state = s18 & input = enable_attach)	;
+UE_NAS2_T434	:=	 (ue_nas2_state = s18 & input = auth_request_plain)	;
+UE_NAS2_T435	:=	 (ue_nas2_state = s18 & input = security_mode_command)	;
+UE_NAS2_T436	:=	 (ue_nas2_state = s18 & input = attach_accept)	;
+UE_NAS2_T437	:=	 (ue_nas2_state = s18 & input = rrc_security_mode_command)	;
+UE_NAS2_T438	:=	 (ue_nas2_state = s18 & input = rrc_reconf)	;
+UE_NAS2_T439	:=	 (ue_nas2_state = s18 & input = GUTI_reallocation)	;
+UE_NAS2_T440	:=	 (ue_nas2_state = s18 & input = tau_accept)	;
+UE_NAS2_T441	:=	 (ue_nas2_state = s18 & input = paging_tmsi)	;
+UE_NAS2_T442	:=	 (ue_nas2_state = s18 & input = GUTI_reallocation_plain)	;
+UE_NAS2_T443	:=	 (ue_nas2_state = s18 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS2_T444	:=	 (ue_nas2_state = s18 & input = attach_accept_no_integrity)	;
+UE_NAS2_T445	:=	 (ue_nas2_state = s18 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T446	:=	 (ue_nas2_state = s18 & input = security_mode_command_plain)	;
+UE_NAS2_T447	:=	 (ue_nas2_state = s18 & input = tau_accept_plain)	;
+UE_NAS2_T448	:=	 (ue_nas2_state = s18 & input = dl_nas_transport)	;
+UE_NAS2_T449	:=	 (ue_nas2_state = s18 & input = dl_nas_transport_plain)	;
+UE_NAS2_T450	:=	 (ue_nas2_state = s18 & input = identity_request_plain)	;
+UE_NAS2_T451	:=	 (ue_nas2_state = s18 & input = auth_request_replay)	;
+UE_NAS2_T452	:=	 (ue_nas2_state = s18 & input = security_mode_command_replay)	;
+UE_NAS2_T453	:=	 (ue_nas2_state = s18 & input = GUTI_reallocation_replay)	;
+UE_NAS2_T454	:=	 (ue_nas2_state = s18 & input = rrc_reconf_replay)	;
+UE_NAS2_T455	:=	 (ue_nas2_state = s18 & input = rrc_release_tau)	;
+UE_NAS2_T457	:=	 (ue_nas2_state = s19 & input = enable_attach)	;
+UE_NAS2_T458	:=	 (ue_nas2_state = s19 & input = auth_request_plain)	;
+UE_NAS2_T459	:=	 (ue_nas2_state = s19 & input = security_mode_command)	;
+UE_NAS2_T461	:=	 (ue_nas2_state = s19 & input = rrc_security_mode_command)	;
+UE_NAS2_T462	:=	 (ue_nas2_state = s19 & input = rrc_reconf)	;
+UE_NAS2_T469	:=	 (ue_nas2_state = s19 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T474	:=	 (ue_nas2_state = s19 & input = identity_request_plain)	;
+UE_NAS2_T475	:=	 (ue_nas2_state = s19 & input = auth_request_replay)	;
+UE_NAS2_T476	:=	 (ue_nas2_state = s19 & input = security_mode_command_replay)	;
+UE_NAS2_T478	:=	 (ue_nas2_state = s19 & input = rrc_reconf_replay)	;
+UE_NAS2_T479	:=	 (ue_nas2_state = s19 & input = rrc_release_tau)	;
+UE_NAS2_T480	:=	 (ue_nas2_state = s19 & input = rrc_release)	;
+UE_NAS2_T481	:=	 (ue_nas2_state = s20 & input = enable_attach)	;
+UE_NAS2_T482	:=	 (ue_nas2_state = s20 & input = auth_request_plain)	;
+UE_NAS2_T483	:=	 (ue_nas2_state = s20 & input = security_mode_command)	;
+UE_NAS2_T485	:=	 (ue_nas2_state = s20 & input = rrc_security_mode_command)	;
+UE_NAS2_T486	:=	 (ue_nas2_state = s20 & input = rrc_reconf)	;
+UE_NAS2_T493	:=	 (ue_nas2_state = s20 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T498	:=	 (ue_nas2_state = s20 & input = identity_request_plain)	;
+UE_NAS2_T499	:=	 (ue_nas2_state = s20 & input = auth_request_replay)	;
+UE_NAS2_T500	:=	 (ue_nas2_state = s20 & input = security_mode_command_replay)	;
+UE_NAS2_T502	:=	 (ue_nas2_state = s20 & input = rrc_reconf_replay)	;
+UE_NAS2_T503	:=	 (ue_nas2_state = s20 & input = rrc_release_tau)	;
+UE_NAS2_T504	:=	 (ue_nas2_state = s20 & input = rrc_release)	;
+UE_NAS2_T505	:=	 (ue_nas2_state = s21 & input = enable_attach)	;
+UE_NAS2_T506	:=	 (ue_nas2_state = s21 & input = auth_request_plain)	;
+UE_NAS2_T507	:=	 (ue_nas2_state = s21 & input = security_mode_command)	;
+UE_NAS2_T510	:=	 (ue_nas2_state = s21 & input = rrc_reconf)	;
+UE_NAS2_T515	:=	 (ue_nas2_state = s21 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS2_T517	:=	 (ue_nas2_state = s21 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T522	:=	 (ue_nas2_state = s21 & input = identity_request_plain)	;
+UE_NAS2_T523	:=	 (ue_nas2_state = s21 & input = auth_request_replay)	;
+UE_NAS2_T524	:=	 (ue_nas2_state = s21 & input = security_mode_command_replay)	;
+UE_NAS2_T526	:=	 (ue_nas2_state = s21 & input = rrc_reconf_replay)	;
+UE_NAS2_T527	:=	 (ue_nas2_state = s21 & input = rrc_release_tau)	;
+UE_NAS2_T528	:=	 (ue_nas2_state = s21 & input = rrc_release)	;
+UE_NAS2_T529	:=	 (ue_nas2_state = s22 & input = enable_attach)	;
+UE_NAS2_T530	:=	 (ue_nas2_state = s22 & input = auth_request_plain)	;
+UE_NAS2_T531	:=	 (ue_nas2_state = s22 & input = security_mode_command)	;
+UE_NAS2_T533	:=	 (ue_nas2_state = s22 & input = rrc_security_mode_command)	;
+UE_NAS2_T534	:=	 (ue_nas2_state = s22 & input = rrc_reconf)	;
+UE_NAS2_T541	:=	 (ue_nas2_state = s22 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T546	:=	 (ue_nas2_state = s22 & input = identity_request_plain)	;
+UE_NAS2_T547	:=	 (ue_nas2_state = s22 & input = auth_request_replay)	;
+UE_NAS2_T550	:=	 (ue_nas2_state = s22 & input = rrc_reconf_replay)	;
+UE_NAS2_T551	:=	 (ue_nas2_state = s22 & input = rrc_release_tau)	;
+UE_NAS2_T552	:=	 (ue_nas2_state = s22 & input = rrc_release)	;
+UE_NAS2_T553	:=	 (ue_nas2_state = s23 & input = enable_attach)	;
+UE_NAS2_T554	:=	 (ue_nas2_state = s23 & input = auth_request_plain)	;
+UE_NAS2_T555	:=	 (ue_nas2_state = s23 & input = security_mode_command)	;
+UE_NAS2_T558	:=	 (ue_nas2_state = s23 & input = rrc_reconf)	;
+UE_NAS2_T563	:=	 (ue_nas2_state = s23 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS2_T565	:=	 (ue_nas2_state = s23 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T570	:=	 (ue_nas2_state = s23 & input = identity_request_plain)	;
+UE_NAS2_T571	:=	 (ue_nas2_state = s23 & input = auth_request_replay)	;
+UE_NAS2_T574	:=	 (ue_nas2_state = s23 & input = rrc_reconf_replay)	;
+UE_NAS2_T575	:=	 (ue_nas2_state = s23 & input = rrc_release_tau)	;
+UE_NAS2_T576	:=	 (ue_nas2_state = s23 & input = rrc_release)	;
+UE_NAS2_T577	:=	 (ue_nas2_state = s24 & input = enable_attach)	;
+UE_NAS2_T578	:=	 (ue_nas2_state = s24 & input = auth_request_plain)	;
+UE_NAS2_T579	:=	 (ue_nas2_state = s24 & input = security_mode_command)	;
+UE_NAS2_T581	:=	 (ue_nas2_state = s24 & input = rrc_security_mode_command)	;
+UE_NAS2_T582	:=	 (ue_nas2_state = s24 & input = rrc_reconf)	;
+UE_NAS2_T587	:=	 (ue_nas2_state = s24 & input = rrc_security_mode_command_downgraded)	;
+UE_NAS2_T589	:=	 (ue_nas2_state = s24 & input = security_mode_command_no_integrity)	;
+UE_NAS2_T594	:=	 (ue_nas2_state = s24 & input = identity_request_plain)	;
+UE_NAS2_T595	:=	 (ue_nas2_state = s24 & input = auth_request_replay)	;
+UE_NAS2_T596	:=	 (ue_nas2_state = s24 & input = security_mode_command_replay)	;
+UE_NAS2_T598	:=	 (ue_nas2_state = s24 & input = rrc_reconf_replay)	;
+UE_NAS2_T599	:=	 (ue_nas2_state = s24 & input = rrc_release_tau)	;
+UE_NAS2_T600	:=	 (ue_nas2_state = s24 & input = rrc_release)	;
+
+
+ASSIGN
+
+
+
+---------------UE_NAS1 state machine ------------------
+
+init(ue_nas1_state)	:=s0;
+
+next(ue_nas1_state)	:=	 case
+
+(UE_NAS1_T30 | UE_NAS1_T46 | UE_NAS1_T47 | UE_NAS1_T48 | UE_NAS1_T54 | UE_NAS1_T70 | UE_NAS1_T71 | UE_NAS1_T72 | UE_NAS1_T78 | UE_NAS1_T94 | UE_NAS1_T95 | UE_NAS1_T96 | UE_NAS1_T102 | UE_NAS1_T118 | UE_NAS1_T119 | UE_NAS1_T120 | UE_NAS1_T126 | UE_NAS1_T142 | UE_NAS1_T143 | UE_NAS1_T144 | UE_NAS1_T150 | UE_NAS1_T166 | UE_NAS1_T167 | UE_NAS1_T168 | UE_NAS1_T174 | UE_NAS1_T190 | UE_NAS1_T191 | UE_NAS1_T192 | UE_NAS1_T198 | UE_NAS1_T214 | UE_NAS1_T215 | UE_NAS1_T216 | UE_NAS1_T227 | UE_NAS1_T238 | UE_NAS1_T264 | UE_NAS1_T275 | UE_NAS1_T286 | UE_NAS1_T312 | UE_NAS1_T323 | UE_NAS1_T334 | UE_NAS1_T335 | UE_NAS1_T347 | UE_NAS1_T358 | UE_NAS1_T359 | UE_NAS1_T384 | UE_NAS1_T408 | UE_NAS1_T410 | UE_NAS1_T411 | UE_NAS1_T412 | UE_NAS1_T415 | UE_NAS1_T416 | UE_NAS1_T417 | UE_NAS1_T418 | UE_NAS1_T420 | UE_NAS1_T421 | UE_NAS1_T422 | UE_NAS1_T423 | UE_NAS1_T424 | UE_NAS1_T425 | UE_NAS1_T426 | UE_NAS1_T427 | UE_NAS1_T428 | UE_NAS1_T429 | UE_NAS1_T431 | UE_NAS1_T432 | UE_NAS1_T434 | UE_NAS1_T435 | UE_NAS1_T436 | UE_NAS1_T439 | UE_NAS1_T440 | UE_NAS1_T441 | UE_NAS1_T442 | UE_NAS1_T444 | UE_NAS1_T445 | UE_NAS1_T446 | UE_NAS1_T447 | UE_NAS1_T448 | UE_NAS1_T449 | UE_NAS1_T450 | UE_NAS1_T451 | UE_NAS1_T452 | UE_NAS1_T453 | UE_NAS1_T455 | UE_NAS1_T456 | UE_NAS1_T458 | UE_NAS1_T459 | UE_NAS1_T460 | UE_NAS1_T461 | UE_NAS1_T463 | UE_NAS1_T464 | UE_NAS1_T465 | UE_NAS1_T466 | UE_NAS1_T467 | UE_NAS1_T468 | UE_NAS1_T469 | UE_NAS1_T470 | UE_NAS1_T471 | UE_NAS1_T472 | UE_NAS1_T473 | UE_NAS1_T474 | UE_NAS1_T475 | UE_NAS1_T476 | UE_NAS1_T477 | UE_NAS1_T478 | UE_NAS1_T479 | UE_NAS1_T482 | UE_NAS1_T483 | UE_NAS1_T484 | UE_NAS1_T487 | UE_NAS1_T488 | UE_NAS1_T489 | UE_NAS1_T490 | UE_NAS1_T492 | UE_NAS1_T493 | UE_NAS1_T494 | UE_NAS1_T495 | UE_NAS1_T496 | UE_NAS1_T497 | UE_NAS1_T498 | UE_NAS1_T499 | UE_NAS1_T500 | UE_NAS1_T501 | UE_NAS1_T503 | UE_NAS1_T504 )	:	s0	;
+(UE_NAS1_T1 | UE_NAS1_T25 | UE_NAS1_T27 | UE_NAS1_T37 | UE_NAS1_T42 | UE_NAS1_T49 | UE_NAS1_T73 | UE_NAS1_T97 | UE_NAS1_T121 | UE_NAS1_T145 | UE_NAS1_T169 | UE_NAS1_T193 | UE_NAS1_T217 | UE_NAS1_T241 | UE_NAS1_T265 | UE_NAS1_T289 | UE_NAS1_T313 | UE_NAS1_T337 | UE_NAS1_T361 | UE_NAS1_T385 | UE_NAS1_T409 | UE_NAS1_T433 | UE_NAS1_T457 | UE_NAS1_T481 )	:	s1	;
+(UE_NAS1_T26 | UE_NAS1_T50 | UE_NAS1_T61 | UE_NAS1_T66 | UE_NAS1_T67 | UE_NAS1_T160 | UE_NAS1_T383 )	:	s2	;
+(UE_NAS1_T51 | UE_NAS1_T75 | UE_NAS1_T85 | UE_NAS1_T90 | UE_NAS1_T91 | UE_NAS1_T92 | UE_NAS1_T147 )	:	s3	;
+(UE_NAS1_T79 | UE_NAS1_T80 | UE_NAS1_T88 | UE_NAS1_T114 | UE_NAS1_T115 | UE_NAS1_T124 | UE_NAS1_T127 | UE_NAS1_T128 | UE_NAS1_T130 | UE_NAS1_T132 | UE_NAS1_T135 | UE_NAS1_T136 | UE_NAS1_T137 )	:	s4	;
+(UE_NAS1_T99 | UE_NAS1_T109 | UE_NAS1_T110 | UE_NAS1_T116 | UE_NAS1_T123 | UE_NAS1_T133 | UE_NAS1_T138 | UE_NAS1_T139 | UE_NAS1_T140 )	:	s5	;
+(UE_NAS1_T74 | UE_NAS1_T98 | UE_NAS1_T122 | UE_NAS1_T146 | UE_NAS1_T157 | UE_NAS1_T162 | UE_NAS1_T163 | UE_NAS1_T164 | UE_NAS1_T170 | UE_NAS1_T194 | UE_NAS1_T407 )	:	s6	;
+(UE_NAS1_T76 | UE_NAS1_T100 | UE_NAS1_T175 | UE_NAS1_T184 | UE_NAS1_T186 | UE_NAS1_T187 | UE_NAS1_T196 | UE_NAS1_T199 | UE_NAS1_T200 | UE_NAS1_T202 | UE_NAS1_T204 | UE_NAS1_T207 | UE_NAS1_T208 | UE_NAS1_T209 )	:	s7	;
+(UE_NAS1_T171 | UE_NAS1_T181 | UE_NAS1_T182 | UE_NAS1_T188 | UE_NAS1_T195 | UE_NAS1_T205 | UE_NAS1_T210 | UE_NAS1_T211 | UE_NAS1_T212 | UE_NAS1_T263 | UE_NAS1_T311 )	:	s8	;
+(UE_NAS1_T77 | UE_NAS1_T219 | UE_NAS1_T222 | UE_NAS1_T229 | UE_NAS1_T234 | UE_NAS1_T235 | UE_NAS1_T236 | UE_NAS1_T267 )	:	s9	;
+(UE_NAS1_T173 | UE_NAS1_T220 | UE_NAS1_T246 | UE_NAS1_T247 | UE_NAS1_T256 | UE_NAS1_T258 | UE_NAS1_T259 | UE_NAS1_T292 | UE_NAS1_T295 | UE_NAS1_T296 | UE_NAS1_T298 | UE_NAS1_T300 | UE_NAS1_T303 | UE_NAS1_T304 | UE_NAS1_T305 | UE_NAS1_T316 | UE_NAS1_T388 | UE_NAS1_T391 | UE_NAS1_T392 | UE_NAS1_T400 )	:	s10	;
+(UE_NAS1_T149 | UE_NAS1_T218 | UE_NAS1_T266 | UE_NAS1_T270 | UE_NAS1_T277 | UE_NAS1_T282 | UE_NAS1_T283 | UE_NAS1_T284 | UE_NAS1_T314 | UE_NAS1_T338 )	:	s11	;
+(UE_NAS1_T197 | UE_NAS1_T243 | UE_NAS1_T253 | UE_NAS1_T254 | UE_NAS1_T260 | UE_NAS1_T291 | UE_NAS1_T294 | UE_NAS1_T301 | UE_NAS1_T306 | UE_NAS1_T307 | UE_NAS1_T308 )	:	s12	;
+(UE_NAS1_T101 | UE_NAS1_T223 | UE_NAS1_T224 | UE_NAS1_T232 | UE_NAS1_T318 | UE_NAS1_T330 | UE_NAS1_T331 | UE_NAS1_T340 | UE_NAS1_T343 | UE_NAS1_T344 | UE_NAS1_T346 | UE_NAS1_T348 | UE_NAS1_T351 | UE_NAS1_T352 | UE_NAS1_T353 )	:	s13	;
+(UE_NAS1_T125 | UE_NAS1_T315 | UE_NAS1_T325 | UE_NAS1_T326 | UE_NAS1_T332 | UE_NAS1_T339 | UE_NAS1_T342 | UE_NAS1_T349 | UE_NAS1_T354 | UE_NAS1_T355 | UE_NAS1_T356 )	:	s14	;
+(UE_NAS1_T242 | UE_NAS1_T290 | UE_NAS1_T362 | UE_NAS1_T366 | UE_NAS1_T373 | UE_NAS1_T378 | UE_NAS1_T379 | UE_NAS1_T380 | UE_NAS1_T386 )	:	s15	;
+(UE_NAS1_T363 | UE_NAS1_T387 | UE_NAS1_T390 | UE_NAS1_T397 | UE_NAS1_T402 | UE_NAS1_T403 | UE_NAS1_T404 )	:	s16	;
+(UE_NAS1_T251 | UE_NAS1_T262 | UE_NAS1_T299 | UE_NAS1_T310 | UE_NAS1_T389 | UE_NAS1_T395 | UE_NAS1_T406 )	:	s17	;
+(UE_NAS1_T413 | UE_NAS1_T438 )	:	s18	;
+(UE_NAS1_T239 | UE_NAS1_T240 | UE_NAS1_T287 | UE_NAS1_T288 | UE_NAS1_T336 | UE_NAS1_T360 | UE_NAS1_T462 )	:	s19	;
+(UE_NAS1_T371 | UE_NAS1_T382 | UE_NAS1_T414 | UE_NAS1_T430 | UE_NAS1_T443 | UE_NAS1_T454 )	:	s20	;
+TRUE	:	ue_nas1_state	;
+esac	;
+
+---------------UE_NAS2 state machine ------------------
+
+init(ue_nas2_state)	:=s0;
+
+next(ue_nas2_state)	:=	 case
+
+(UE_NAS2_T30 | UE_NAS2_T46 | UE_NAS2_T47 | UE_NAS2_T48 | UE_NAS2_T54 | UE_NAS2_T70 | UE_NAS2_T71 | UE_NAS2_T72 | UE_NAS2_T77 | UE_NAS2_T78 | UE_NAS2_T94 | UE_NAS2_T95 | UE_NAS2_T96 | UE_NAS2_T101 | UE_NAS2_T102 | UE_NAS2_T118 | UE_NAS2_T119 | UE_NAS2_T120 | UE_NAS2_T125 | UE_NAS2_T126 | UE_NAS2_T142 | UE_NAS2_T143 | UE_NAS2_T144 | UE_NAS2_T150 | UE_NAS2_T166 | UE_NAS2_T167 | UE_NAS2_T168 | UE_NAS2_T173 | UE_NAS2_T174 | UE_NAS2_T190 | UE_NAS2_T191 | UE_NAS2_T192 | UE_NAS2_T198 | UE_NAS2_T214 | UE_NAS2_T215 | UE_NAS2_T216 | UE_NAS2_T222 | UE_NAS2_T238 | UE_NAS2_T239 | UE_NAS2_T240 | UE_NAS2_T246 | UE_NAS2_T262 | UE_NAS2_T263 | UE_NAS2_T264 | UE_NAS2_T275 | UE_NAS2_T286 | UE_NAS2_T299 | UE_NAS2_T310 | UE_NAS2_T317 | UE_NAS2_T323 | UE_NAS2_T334 | UE_NAS2_T341 | UE_NAS2_T347 | UE_NAS2_T358 | UE_NAS2_T371 | UE_NAS2_T382 | UE_NAS2_T395 | UE_NAS2_T406 | UE_NAS2_T413 | UE_NAS2_T414 | UE_NAS2_T430 | UE_NAS2_T431 | UE_NAS2_T432 | UE_NAS2_T434 | UE_NAS2_T435 | UE_NAS2_T436 | UE_NAS2_T437 | UE_NAS2_T439 | UE_NAS2_T440 | UE_NAS2_T441 | UE_NAS2_T442 | UE_NAS2_T443 | UE_NAS2_T444 | UE_NAS2_T445 | UE_NAS2_T446 | UE_NAS2_T447 | UE_NAS2_T448 | UE_NAS2_T449 | UE_NAS2_T450 | UE_NAS2_T451 | UE_NAS2_T452 | UE_NAS2_T453 | UE_NAS2_T454 | UE_NAS2_T455 | UE_NAS2_T461 | UE_NAS2_T462 | UE_NAS2_T478 | UE_NAS2_T479 | UE_NAS2_T480 | UE_NAS2_T486 | UE_NAS2_T502 | UE_NAS2_T503 | UE_NAS2_T504 | UE_NAS2_T515 | UE_NAS2_T526 | UE_NAS2_T534 | UE_NAS2_T550 | UE_NAS2_T551 | UE_NAS2_T552 | UE_NAS2_T563 | UE_NAS2_T574 | UE_NAS2_T575 | UE_NAS2_T581 | UE_NAS2_T587 | UE_NAS2_T598 )	:	s0	;
+(UE_NAS2_T1 | UE_NAS2_T25 | UE_NAS2_T42 | UE_NAS2_T49 | UE_NAS2_T73 | UE_NAS2_T97 | UE_NAS2_T121 | UE_NAS2_T145 | UE_NAS2_T169 | UE_NAS2_T193 | UE_NAS2_T217 | UE_NAS2_T241 | UE_NAS2_T265 | UE_NAS2_T289 | UE_NAS2_T313 | UE_NAS2_T337 | UE_NAS2_T361 | UE_NAS2_T385 | UE_NAS2_T409 | UE_NAS2_T433 | UE_NAS2_T457 | UE_NAS2_T481 | UE_NAS2_T505 | UE_NAS2_T529 | UE_NAS2_T553 | UE_NAS2_T577 )	:	s1	;
+(UE_NAS2_T26 | UE_NAS2_T50 | UE_NAS2_T66 | UE_NAS2_T67 )	:	s2	;
+(UE_NAS2_T27 | UE_NAS2_T75 | UE_NAS2_T85 | UE_NAS2_T90 | UE_NAS2_T92 | UE_NAS2_T123 )	:	s3	;
+(UE_NAS2_T74 | UE_NAS2_T98 | UE_NAS2_T114 | UE_NAS2_T115 | UE_NAS2_T458 )	:	s4	;
+(UE_NAS2_T37 | UE_NAS2_T38 | UE_NAS2_T133 | UE_NAS2_T138 )	:	s5	;
+(UE_NAS2_T157 | UE_NAS2_T162 | UE_NAS2_T163 )	:	s6	;
+(UE_NAS2_T62 | UE_NAS2_T122 | UE_NAS2_T170 | UE_NAS2_T186 | UE_NAS2_T187 | UE_NAS2_T410 )	:	s7	;
+(UE_NAS2_T146 | UE_NAS2_T194 | UE_NAS2_T210 | UE_NAS2_T211 | UE_NAS2_T530 )	:	s8	;
+(UE_NAS2_T51 | UE_NAS2_T99 | UE_NAS2_T147 | UE_NAS2_T171 | UE_NAS2_T195 | UE_NAS2_T219 | UE_NAS2_T229 | UE_NAS2_T234 | UE_NAS2_T235 | UE_NAS2_T236 | UE_NAS2_T243 | UE_NAS2_T411 | UE_NAS2_T459 | UE_NAS2_T483 | UE_NAS2_T531 )	:	s9	;
+(UE_NAS2_T218 | UE_NAS2_T242 | UE_NAS2_T258 | UE_NAS2_T259 | UE_NAS2_T482 )	:	s10	;
+(UE_NAS2_T221 | UE_NAS2_T267 | UE_NAS2_T270 | UE_NAS2_T277 | UE_NAS2_T282 | UE_NAS2_T283 | UE_NAS2_T284 | UE_NAS2_T363 )	:	s11	;
+(UE_NAS2_T245 | UE_NAS2_T266 | UE_NAS2_T290 | UE_NAS2_T294 | UE_NAS2_T306 | UE_NAS2_T307 | UE_NAS2_T506 )	:	s12	;
+(UE_NAS2_T291 | UE_NAS2_T315 | UE_NAS2_T318 | UE_NAS2_T325 | UE_NAS2_T330 | UE_NAS2_T331 | UE_NAS2_T332 | UE_NAS2_T339 | UE_NAS2_T387 | UE_NAS2_T507 | UE_NAS2_T555 | UE_NAS2_T579 )	:	s13	;
+(UE_NAS2_T314 | UE_NAS2_T338 | UE_NAS2_T342 | UE_NAS2_T354 | UE_NAS2_T355 | UE_NAS2_T578 )	:	s14	;
+(UE_NAS2_T149 | UE_NAS2_T366 | UE_NAS2_T373 | UE_NAS2_T378 | UE_NAS2_T379 )	:	s15	;
+(UE_NAS2_T197 | UE_NAS2_T362 | UE_NAS2_T386 | UE_NAS2_T390 | UE_NAS2_T402 | UE_NAS2_T403 | UE_NAS2_T554 )	:	s16	;
+(UE_NAS2_T61 | UE_NAS2_T181 | UE_NAS2_T421 | UE_NAS2_T426 | UE_NAS2_T427 )	:	s17	;
+(UE_NAS2_T287 | UE_NAS2_T288 | UE_NAS2_T311 | UE_NAS2_T312 | UE_NAS2_T335 | UE_NAS2_T336 | UE_NAS2_T359 | UE_NAS2_T360 | UE_NAS2_T383 | UE_NAS2_T384 | UE_NAS2_T407 | UE_NAS2_T408 | UE_NAS2_T438 | UE_NAS2_T527 | UE_NAS2_T528 | UE_NAS2_T576 | UE_NAS2_T599 | UE_NAS2_T600 )	:	s18	;
+(UE_NAS2_T109 | UE_NAS2_T116 | UE_NAS2_T469 | UE_NAS2_T474 | UE_NAS2_T475 | UE_NAS2_T476 )	:	s19	;
+(UE_NAS2_T253 | UE_NAS2_T260 | UE_NAS2_T493 | UE_NAS2_T498 | UE_NAS2_T499 | UE_NAS2_T500 )	:	s20	;
+(UE_NAS2_T301 | UE_NAS2_T308 | UE_NAS2_T485 | UE_NAS2_T510 | UE_NAS2_T517 | UE_NAS2_T522 | UE_NAS2_T523 | UE_NAS2_T524 )	:	s21	;
+(UE_NAS2_T205 | UE_NAS2_T541 | UE_NAS2_T546 | UE_NAS2_T547 )	:	s22	;
+(UE_NAS2_T397 | UE_NAS2_T533 | UE_NAS2_T558 | UE_NAS2_T565 | UE_NAS2_T570 | UE_NAS2_T571 )	:	s23	;
+(UE_NAS2_T349 | UE_NAS2_T356 | UE_NAS2_T582 | UE_NAS2_T589 | UE_NAS2_T594 | UE_NAS2_T595 | UE_NAS2_T596 )	:	s24	;
+TRUE	:	ue_nas2_state	;
+esac	;
+
+
+init(ue_nas1_action)	:= null_action	;
+
+next(ue_nas1_action)	:=	 case
+
+(UE_NAS1_T1 | UE_NAS1_T25 | UE_NAS1_T49 | UE_NAS1_T73 | UE_NAS1_T97 | UE_NAS1_T121 | UE_NAS1_T145 | UE_NAS1_T169 | UE_NAS1_T193 | UE_NAS1_T217 | UE_NAS1_T241 | UE_NAS1_T265 | UE_NAS1_T289 | UE_NAS1_T313 | UE_NAS1_T337 | UE_NAS1_T361 | UE_NAS1_T385 | UE_NAS1_T409 | UE_NAS1_T433 | UE_NAS1_T457 | UE_NAS1_T481 )	:	attach_request	;
+(UE_NAS1_T26 | UE_NAS1_T50 | UE_NAS1_T67 | UE_NAS1_T74 | UE_NAS1_T98 | UE_NAS1_T122 | UE_NAS1_T146 | UE_NAS1_T163 | UE_NAS1_T170 | UE_NAS1_T194 | UE_NAS1_T218 | UE_NAS1_T242 | UE_NAS1_T266 | UE_NAS1_T283 | UE_NAS1_T290 | UE_NAS1_T314 | UE_NAS1_T338 | UE_NAS1_T362 | UE_NAS1_T379 | UE_NAS1_T386 )	:	auth_response	;
+(UE_NAS1_T27 | UE_NAS1_T37 | UE_NAS1_T61 | UE_NAS1_T85 | UE_NAS1_T99 | UE_NAS1_T109 | UE_NAS1_T116 | UE_NAS1_T123 | UE_NAS1_T133 | UE_NAS1_T140 | UE_NAS1_T157 | UE_NAS1_T164 | UE_NAS1_T171 | UE_NAS1_T181 | UE_NAS1_T188 | UE_NAS1_T195 | UE_NAS1_T205 | UE_NAS1_T212 | UE_NAS1_T229 | UE_NAS1_T243 | UE_NAS1_T253 | UE_NAS1_T260 | UE_NAS1_T277 | UE_NAS1_T284 | UE_NAS1_T291 | UE_NAS1_T301 | UE_NAS1_T308 | UE_NAS1_T315 | UE_NAS1_T325 | UE_NAS1_T332 | UE_NAS1_T339 | UE_NAS1_T349 | UE_NAS1_T356 | UE_NAS1_T373 | UE_NAS1_T380 | UE_NAS1_T397 )	:	security_mode_reject	;
+(UE_NAS1_T30 | UE_NAS1_T46 | UE_NAS1_T47 | UE_NAS1_T48 | UE_NAS1_T54 | UE_NAS1_T70 | UE_NAS1_T71 | UE_NAS1_T72 | UE_NAS1_T78 | UE_NAS1_T79 | UE_NAS1_T80 | UE_NAS1_T88 | UE_NAS1_T94 | UE_NAS1_T95 | UE_NAS1_T96 | UE_NAS1_T102 | UE_NAS1_T110 | UE_NAS1_T118 | UE_NAS1_T119 | UE_NAS1_T120 | UE_NAS1_T124 | UE_NAS1_T126 | UE_NAS1_T127 | UE_NAS1_T128 | UE_NAS1_T130 | UE_NAS1_T132 | UE_NAS1_T135 | UE_NAS1_T136 | UE_NAS1_T137 | UE_NAS1_T142 | UE_NAS1_T143 | UE_NAS1_T144 | UE_NAS1_T150 | UE_NAS1_T160 | UE_NAS1_T166 | UE_NAS1_T167 | UE_NAS1_T168 | UE_NAS1_T174 | UE_NAS1_T182 | UE_NAS1_T190 | UE_NAS1_T191 | UE_NAS1_T192 | UE_NAS1_T196 | UE_NAS1_T198 | UE_NAS1_T199 | UE_NAS1_T200 | UE_NAS1_T202 | UE_NAS1_T204 | UE_NAS1_T207 | UE_NAS1_T208 | UE_NAS1_T209 | UE_NAS1_T214 | UE_NAS1_T215 | UE_NAS1_T216 | UE_NAS1_T223 | UE_NAS1_T224 | UE_NAS1_T227 | UE_NAS1_T232 | UE_NAS1_T238 | UE_NAS1_T239 | UE_NAS1_T240 | UE_NAS1_T251 | UE_NAS1_T254 | UE_NAS1_T262 | UE_NAS1_T264 | UE_NAS1_T275 | UE_NAS1_T286 | UE_NAS1_T287 | UE_NAS1_T288 | UE_NAS1_T292 | UE_NAS1_T295 | UE_NAS1_T296 | UE_NAS1_T298 | UE_NAS1_T299 | UE_NAS1_T300 | UE_NAS1_T303 | UE_NAS1_T304 | UE_NAS1_T305 | UE_NAS1_T310 | UE_NAS1_T312 | UE_NAS1_T323 | UE_NAS1_T326 | UE_NAS1_T334 | UE_NAS1_T335 | UE_NAS1_T336 | UE_NAS1_T340 | UE_NAS1_T343 | UE_NAS1_T344 | UE_NAS1_T346 | UE_NAS1_T347 | UE_NAS1_T348 | UE_NAS1_T351 | UE_NAS1_T352 | UE_NAS1_T353 | UE_NAS1_T358 | UE_NAS1_T359 | UE_NAS1_T360 | UE_NAS1_T371 | UE_NAS1_T382 | UE_NAS1_T384 | UE_NAS1_T388 | UE_NAS1_T389 | UE_NAS1_T392 | UE_NAS1_T395 | UE_NAS1_T406 | UE_NAS1_T408 | UE_NAS1_T410 | UE_NAS1_T411 | UE_NAS1_T412 | UE_NAS1_T414 | UE_NAS1_T415 | UE_NAS1_T416 | UE_NAS1_T417 | UE_NAS1_T418 | UE_NAS1_T420 | UE_NAS1_T421 | UE_NAS1_T422 | UE_NAS1_T423 | UE_NAS1_T424 | UE_NAS1_T425 | UE_NAS1_T426 | UE_NAS1_T427 | UE_NAS1_T428 | UE_NAS1_T429 | UE_NAS1_T430 | UE_NAS1_T432 | UE_NAS1_T434 | UE_NAS1_T435 | UE_NAS1_T436 | UE_NAS1_T439 | UE_NAS1_T440 | UE_NAS1_T441 | UE_NAS1_T442 | UE_NAS1_T443 | UE_NAS1_T444 | UE_NAS1_T445 | UE_NAS1_T446 | UE_NAS1_T447 | UE_NAS1_T448 | UE_NAS1_T449 | UE_NAS1_T450 | UE_NAS1_T451 | UE_NAS1_T452 | UE_NAS1_T453 | UE_NAS1_T454 | UE_NAS1_T456 | UE_NAS1_T458 | UE_NAS1_T459 | UE_NAS1_T460 | UE_NAS1_T461 | UE_NAS1_T463 | UE_NAS1_T464 | UE_NAS1_T465 | UE_NAS1_T466 | UE_NAS1_T467 | UE_NAS1_T468 | UE_NAS1_T469 | UE_NAS1_T470 | UE_NAS1_T471 | UE_NAS1_T472 | UE_NAS1_T473 | UE_NAS1_T474 | UE_NAS1_T475 | UE_NAS1_T476 | UE_NAS1_T477 | UE_NAS1_T478 | UE_NAS1_T479 | UE_NAS1_T482 | UE_NAS1_T483 | UE_NAS1_T484 | UE_NAS1_T487 | UE_NAS1_T488 | UE_NAS1_T489 | UE_NAS1_T490 | UE_NAS1_T492 | UE_NAS1_T493 | UE_NAS1_T494 | UE_NAS1_T495 | UE_NAS1_T496 | UE_NAS1_T497 | UE_NAS1_T498 | UE_NAS1_T499 | UE_NAS1_T500 | UE_NAS1_T501 | UE_NAS1_T504 )	:	null_action	;
+(UE_NAS1_T42 | UE_NAS1_T66 | UE_NAS1_T90 | UE_NAS1_T114 | UE_NAS1_T138 | UE_NAS1_T162 | UE_NAS1_T186 | UE_NAS1_T210 | UE_NAS1_T234 | UE_NAS1_T258 | UE_NAS1_T282 | UE_NAS1_T306 | UE_NAS1_T330 | UE_NAS1_T354 | UE_NAS1_T378 | UE_NAS1_T402 )	:	identity_response	;
+(UE_NAS1_T51 | UE_NAS1_T75 | UE_NAS1_T92 | UE_NAS1_T147 | UE_NAS1_T219 | UE_NAS1_T236 | UE_NAS1_T267 | UE_NAS1_T363 | UE_NAS1_T387 | UE_NAS1_T404 )	:	security_mode_complete	;
+(UE_NAS1_T76 | UE_NAS1_T100 | UE_NAS1_T220 | UE_NAS1_T316 )	:	attach_complete	;
+(UE_NAS1_T77 | UE_NAS1_T101 | UE_NAS1_T125 | UE_NAS1_T149 | UE_NAS1_T173 | UE_NAS1_T197 | UE_NAS1_T413 )	:	rrc_security_mode_complete	;
+(UE_NAS1_T91 | UE_NAS1_T115 | UE_NAS1_T139 | UE_NAS1_T187 | UE_NAS1_T211 | UE_NAS1_T235 | UE_NAS1_T259 | UE_NAS1_T307 | UE_NAS1_T331 | UE_NAS1_T355 | UE_NAS1_T403 )	:	auth_failure_seq	;
+(UE_NAS1_T175 | UE_NAS1_T247 | UE_NAS1_T391 )	:	GUTI_reallocation_complete	;
+(UE_NAS1_T184 | UE_NAS1_T256 | UE_NAS1_T400 )	:	ul_nas_transport	;
+(UE_NAS1_T222 | UE_NAS1_T246 | UE_NAS1_T270 | UE_NAS1_T294 | UE_NAS1_T318 | UE_NAS1_T342 | UE_NAS1_T366 | UE_NAS1_T390 | UE_NAS1_T438 | UE_NAS1_T462 )	:	rrc_reconf_complete	;
+(UE_NAS1_T263 | UE_NAS1_T311 | UE_NAS1_T383 | UE_NAS1_T407 | UE_NAS1_T431 | UE_NAS1_T455 | UE_NAS1_T503 )	:	tau_request	;
+TRUE	:	 null_action	;
+esac	;
+
+
+init(ue_nas2_action)	:= null_action	;
+
+next(ue_nas2_action)	:=	 case
+
+(UE_NAS2_T1 | UE_NAS2_T25 | UE_NAS2_T49 | UE_NAS2_T73 | UE_NAS2_T97 | UE_NAS2_T121 | UE_NAS2_T145 | UE_NAS2_T169 | UE_NAS2_T193 | UE_NAS2_T217 | UE_NAS2_T241 | UE_NAS2_T265 | UE_NAS2_T289 | UE_NAS2_T313 | UE_NAS2_T337 | UE_NAS2_T361 | UE_NAS2_T385 | UE_NAS2_T409 | UE_NAS2_T433 | UE_NAS2_T457 | UE_NAS2_T481 | UE_NAS2_T505 | UE_NAS2_T529 | UE_NAS2_T553 | UE_NAS2_T577 )	:	attach_request	;
+(UE_NAS2_T26 | UE_NAS2_T50 | UE_NAS2_T67 | UE_NAS2_T74 | UE_NAS2_T98 | UE_NAS2_T115 | UE_NAS2_T122 | UE_NAS2_T146 | UE_NAS2_T170 | UE_NAS2_T187 | UE_NAS2_T194 | UE_NAS2_T211 | UE_NAS2_T218 | UE_NAS2_T242 | UE_NAS2_T259 | UE_NAS2_T266 | UE_NAS2_T290 | UE_NAS2_T307 | UE_NAS2_T314 | UE_NAS2_T338 | UE_NAS2_T355 | UE_NAS2_T362 | UE_NAS2_T386 | UE_NAS2_T403 | UE_NAS2_T410 | UE_NAS2_T458 | UE_NAS2_T482 | UE_NAS2_T506 | UE_NAS2_T530 | UE_NAS2_T554 | UE_NAS2_T578 )	:	auth_response	;
+(UE_NAS2_T27 | UE_NAS2_T37 | UE_NAS2_T61 | UE_NAS2_T75 | UE_NAS2_T85 | UE_NAS2_T92 | UE_NAS2_T109 | UE_NAS2_T116 | UE_NAS2_T123 | UE_NAS2_T133 | UE_NAS2_T147 | UE_NAS2_T157 | UE_NAS2_T181 | UE_NAS2_T205 | UE_NAS2_T219 | UE_NAS2_T229 | UE_NAS2_T236 | UE_NAS2_T253 | UE_NAS2_T260 | UE_NAS2_T267 | UE_NAS2_T277 | UE_NAS2_T284 | UE_NAS2_T301 | UE_NAS2_T308 | UE_NAS2_T315 | UE_NAS2_T325 | UE_NAS2_T332 | UE_NAS2_T349 | UE_NAS2_T356 | UE_NAS2_T363 | UE_NAS2_T373 | UE_NAS2_T397 | UE_NAS2_T421 | UE_NAS2_T469 | UE_NAS2_T476 | UE_NAS2_T493 | UE_NAS2_T500 | UE_NAS2_T517 | UE_NAS2_T524 | UE_NAS2_T541 | UE_NAS2_T565 | UE_NAS2_T589 | UE_NAS2_T596 )	:	security_mode_reject	;
+(UE_NAS2_T30 | UE_NAS2_T38 | UE_NAS2_T46 | UE_NAS2_T47 | UE_NAS2_T48 | UE_NAS2_T54 | UE_NAS2_T62 | UE_NAS2_T70 | UE_NAS2_T71 | UE_NAS2_T72 | UE_NAS2_T77 | UE_NAS2_T78 | UE_NAS2_T94 | UE_NAS2_T95 | UE_NAS2_T96 | UE_NAS2_T101 | UE_NAS2_T102 | UE_NAS2_T118 | UE_NAS2_T119 | UE_NAS2_T120 | UE_NAS2_T125 | UE_NAS2_T126 | UE_NAS2_T142 | UE_NAS2_T143 | UE_NAS2_T144 | UE_NAS2_T150 | UE_NAS2_T166 | UE_NAS2_T167 | UE_NAS2_T168 | UE_NAS2_T173 | UE_NAS2_T174 | UE_NAS2_T190 | UE_NAS2_T191 | UE_NAS2_T192 | UE_NAS2_T198 | UE_NAS2_T214 | UE_NAS2_T215 | UE_NAS2_T216 | UE_NAS2_T222 | UE_NAS2_T238 | UE_NAS2_T239 | UE_NAS2_T240 | UE_NAS2_T246 | UE_NAS2_T262 | UE_NAS2_T263 | UE_NAS2_T264 | UE_NAS2_T275 | UE_NAS2_T286 | UE_NAS2_T287 | UE_NAS2_T288 | UE_NAS2_T299 | UE_NAS2_T310 | UE_NAS2_T311 | UE_NAS2_T312 | UE_NAS2_T317 | UE_NAS2_T323 | UE_NAS2_T334 | UE_NAS2_T335 | UE_NAS2_T336 | UE_NAS2_T341 | UE_NAS2_T347 | UE_NAS2_T358 | UE_NAS2_T359 | UE_NAS2_T360 | UE_NAS2_T371 | UE_NAS2_T382 | UE_NAS2_T383 | UE_NAS2_T384 | UE_NAS2_T395 | UE_NAS2_T406 | UE_NAS2_T407 | UE_NAS2_T408 | UE_NAS2_T413 | UE_NAS2_T414 | UE_NAS2_T430 | UE_NAS2_T431 | UE_NAS2_T432 | UE_NAS2_T434 | UE_NAS2_T435 | UE_NAS2_T436 | UE_NAS2_T437 | UE_NAS2_T439 | UE_NAS2_T440 | UE_NAS2_T441 | UE_NAS2_T442 | UE_NAS2_T443 | UE_NAS2_T444 | UE_NAS2_T445 | UE_NAS2_T446 | UE_NAS2_T447 | UE_NAS2_T448 | UE_NAS2_T449 | UE_NAS2_T450 | UE_NAS2_T451 | UE_NAS2_T452 | UE_NAS2_T453 | UE_NAS2_T454 | UE_NAS2_T455 | UE_NAS2_T461 | UE_NAS2_T462 | UE_NAS2_T478 | UE_NAS2_T479 | UE_NAS2_T480 | UE_NAS2_T486 | UE_NAS2_T502 | UE_NAS2_T503 | UE_NAS2_T504 | UE_NAS2_T515 | UE_NAS2_T526 | UE_NAS2_T527 | UE_NAS2_T528 | UE_NAS2_T534 | UE_NAS2_T550 | UE_NAS2_T551 | UE_NAS2_T552 | UE_NAS2_T563 | UE_NAS2_T574 | UE_NAS2_T575 | UE_NAS2_T576 | UE_NAS2_T581 | UE_NAS2_T587 | UE_NAS2_T598 | UE_NAS2_T599 | UE_NAS2_T600 )	:	null_action	;
+(UE_NAS2_T42 | UE_NAS2_T66 | UE_NAS2_T90 | UE_NAS2_T114 | UE_NAS2_T138 | UE_NAS2_T162 | UE_NAS2_T186 | UE_NAS2_T210 | UE_NAS2_T234 | UE_NAS2_T258 | UE_NAS2_T282 | UE_NAS2_T306 | UE_NAS2_T330 | UE_NAS2_T354 | UE_NAS2_T378 | UE_NAS2_T402 | UE_NAS2_T426 | UE_NAS2_T474 | UE_NAS2_T498 | UE_NAS2_T522 | UE_NAS2_T546 | UE_NAS2_T570 | UE_NAS2_T594 )	:	identity_response	;
+(UE_NAS2_T51 | UE_NAS2_T99 | UE_NAS2_T171 | UE_NAS2_T195 | UE_NAS2_T243 | UE_NAS2_T291 | UE_NAS2_T339 | UE_NAS2_T387 | UE_NAS2_T411 | UE_NAS2_T459 | UE_NAS2_T483 | UE_NAS2_T507 | UE_NAS2_T531 | UE_NAS2_T555 | UE_NAS2_T579 )	:	security_mode_complete	;
+(UE_NAS2_T149 | UE_NAS2_T197 | UE_NAS2_T221 | UE_NAS2_T245 | UE_NAS2_T485 | UE_NAS2_T533 )	:	rrc_security_mode_complete	;
+(UE_NAS2_T163 | UE_NAS2_T235 | UE_NAS2_T283 | UE_NAS2_T331 | UE_NAS2_T379 | UE_NAS2_T427 | UE_NAS2_T475 | UE_NAS2_T499 | UE_NAS2_T523 | UE_NAS2_T547 | UE_NAS2_T571 | UE_NAS2_T595 )	:	auth_failure_seq	;
+(UE_NAS2_T270 | UE_NAS2_T294 | UE_NAS2_T318 | UE_NAS2_T342 | UE_NAS2_T366 | UE_NAS2_T390 | UE_NAS2_T438 | UE_NAS2_T510 | UE_NAS2_T558 | UE_NAS2_T582 )	:	rrc_reconf_complete	;
+TRUE	:	 null_action	;
+esac	;
+
+LTLSPEC ( 
+G(!UE_NAS1_T50 & !UE_NAS1_T51)
+->
+ G( ! (input = auth_request_plain & ue_nas1_action = auth_response & ue_nas2_action = null_action))
+);

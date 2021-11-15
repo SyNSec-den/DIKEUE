@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="55b7a2b6-7ff7-4801-b30c-985e92f7d32b" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="$APPLICATION_HOME_DIR$/plugins/maven/lib/maven3" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="downloadSourcesAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1dt7oGtWyopVmSbO399c99vS0m3" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="55b7a2b6-7ff7-4801-b30c-985e92f7d32b" name="Default Changelist" comment="" />
+      <created>1593232708331</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1593232708331</updated>
+      <workItem from="1593232712112" duration="3260000" />
+      <workItem from="1593472364775" duration="1570000" />
+      <workItem from="1593528303187" duration="599000" />
+      <workItem from="1594710806899" duration="2485000" />
+      <workItem from="1599876492350" duration="33000" />
+      <workItem from="1599876582953" duration="53000" />
+      <workItem from="1599876674612" duration="1862000" />
+      <workItem from="1601422465674" duration="606000" />
+      <workItem from="1602774629993" duration="607000" />
+      <workItem from="1602902618916" duration="8325000" />
+      <workItem from="1603160331420" duration="15483000" />
+      <workItem from="1604071242074" duration="30368000" />
+      <workItem from="1607801018555" duration="724000" />
+      <workItem from="1608745105150" duration="4545000" />
+      <workItem from="1608846026332" duration="1274000" />
+      <workItem from="1608941048786" duration="36744000" />
+      <workItem from="1610990929618" duration="1215000" />
+      <workItem from="1611017055514" duration="9672000" />
+      <workItem from="1611092498291" duration="4000" />
+      <workItem from="1611103428304" duration="44278000" />
+      <workItem from="1612651051731" duration="1212000" />
+      <workItem from="1612669996940" duration="7546000" />
+      <workItem from="1628222786745" duration="689000" />
+      <workItem from="1628691494298" duration="2618000" />
+      <workItem from="1629656881541" duration="604000" />
+      <workItem from="1632243660966" duration="8000" />
+      <workItem from="1632426433266" duration="16000" />
+      <workItem from="1632460866604" duration="970000" />
+      <workItem from="1632513950493" duration="2481000" />
+      <workItem from="1636763825385" duration="489000" />
+      <workItem from="1636764326885" duration="146000" />
+      <workItem from="1636764487917" duration="63000" />
+      <workItem from="1636764568467" duration="9208000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2606" y="341" width="538" height="396" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1636767725321">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2606" y="341" width="538" height="396" key="#com.intellij.fileTypes.FileTypeChooser/67.27.1853.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1636767725321" />
+    <state x="2663" y="297" width="424" height="484" key="FileChooserDialogImpl" timestamp="1636764301570">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2663" y="297" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1636764301570" />
+    <state x="2887" y="231" width="924" height="684" key="Maven.ArtifactSearchDialog" timestamp="1636934516075">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2887" y="231" width="924" height="684" key="Maven.ArtifactSearchDialog/67.27.1853.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1636934516075" />
+    <state x="526" y="210" width="924" height="684" key="Maven.ArtifactSearchDialog/67.27.1853.1053/1920.0.1920.1080@67.27.1853.1053" timestamp="1628694219142" />
+    <state x="2369" y="174" key="SettingsEditor" timestamp="1636764549757">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2369" y="174" key="SettingsEditor/67.27.1853.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1636764549757" />
+    <state x="2570" y="278" width="620" height="522" key="find.popup" timestamp="1636826803712">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2570" y="278" width="620" height="522" key="find.popup/67.27.1853.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1636826803712" />
+    <state x="2275" y="260" width="918" height="592" key="new project wizard" timestamp="1632460899858">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2275" y="260" width="918" height="592" key="new project wizard/67.27.1853.1053/1920.0.1920.1080@67.27.1853.1053" timestamp="1632460899858" />
+  </component>
+</project>

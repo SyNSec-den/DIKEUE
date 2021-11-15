@@ -1,0 +1,46 @@
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+Input: security_mode_command_replay
+Output 1: security_mode_complete
+Output 2: security_mode_reject
+[enable_attach auth_request_plain security_mode_command security_mode_command_replay / attach_request auth_response security_mode_complete security_mode_complete] [enable_attach auth_request_plain security_mode_command security_mode_command_replay / attach_request auth_response security_mode_complete security_mode_reject]
+[enable_attach auth_request_plain security_mode_command security_mode_command_replay / attach_request auth_response security_mode_complete security_mode_complete] [enable_attach auth_request_plain security_mode_command security_mode_command_replay / attach_request auth_response security_mode_complete security_mode_reject]
+[enable_attach auth_request_plain security_mode_command rrc_security_mode_command security_mode_command_replay / attach_request auth_response security_mode_complete rrc_security_mode_complete security_mode_complete] [enable_attach auth_request_plain security_mode_command rrc_security_mode_command security_mode_command_replay / attach_request auth_response security_mode_complete rrc_security_mode_complete security_mode_reject]
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+Input: auth_request_replay
+Output 1: auth_response
+Output 2: auth_failure_seq
+[enable_attach auth_request_plain security_mode_command_no_integrity auth_request_replay / attach_request auth_response security_mode_reject auth_response] [enable_attach auth_request_plain security_mode_command_no_integrity auth_request_replay / attach_request auth_response security_mode_reject auth_failure_seq]
+[enable_attach auth_request_plain security_mode_command auth_request_plain security_mode_command_no_integrity auth_request_replay / attach_request auth_response security_mode_complete auth_response security_mode_reject auth_response] [enable_attach auth_request_plain security_mode_command auth_request_plain security_mode_command_no_integrity auth_request_replay / attach_request auth_response security_mode_complete auth_response security_mode_reject auth_failure_seq]
+[enable_attach auth_request_plain security_mode_command auth_request_plain rrc_security_mode_command security_mode_command_replay auth_request_replay / attach_request auth_response security_mode_complete auth_response rrc_security_mode_complete security_mode_reject auth_response] [enable_attach auth_request_plain security_mode_command auth_request_plain rrc_security_mode_command security_mode_command_replay auth_request_replay / attach_request auth_response security_mode_complete auth_response rrc_security_mode_complete security_mode_reject auth_failure_seq]
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+Input: security_mode_command
+Output 1: security_mode_complete
+Output 2: security_mode_reject
+[enable_attach auth_request_plain security_mode_command security_mode_command / attach_request auth_response security_mode_complete security_mode_complete] [enable_attach auth_request_plain security_mode_command security_mode_command / attach_request auth_response security_mode_complete security_mode_reject]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
