@@ -15,6 +15,7 @@ The paper: https://dl.acm.org/doi/10.1145/3460120.3485388
 	- [Device Resetter](#device-resetter)
 	- [Running FSM Inference Module](#running-fsm-inference-module)
 - [FSM Equivalence Checker](#fsm-equivalence-checker)
+- [Acknowledgement](#acknowledgement)
 - [License](#license)
 
 # Introduction
