@@ -1,13 +1,28 @@
+/*
+ *  Modified by Imtiaz Karim, Syed Rafiul Hussain, Abdullah Al Ishtiaq
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package lte.statelearner;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 import de.learnlib.api.SUL;
 import de.learnlib.api.SULException;
 import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
-
-import java.util.ArrayList;
 
 public interface StateLearnerSUL<I, O> extends SUL<I, O> {
 	default Word<O> stepWord(@Nullable Word<I> in) throws SULException {
@@ -19,5 +34,6 @@ public interface StateLearnerSUL<I, O> extends SUL<I, O> {
 		
 		return wbOutput.toWord();
 	}
-	ArrayList<String > getOutputSymbols();
+	ArrayList <String> getOutputSymbols();
+
 }

@@ -1,5 +1,5 @@
 /*
- *  Authors: Imtiaz Karim, Syed Rafiul Hussain, Abdullah Al Ishtiaq
+ *  Modified by Imtiaz Karim, Syed Rafiul Hussain, Abdullah Al Ishtiaq
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,6 +34,10 @@ import de.learnlib.api.EquivalenceOracle;
 import de.learnlib.api.MembershipOracle;
 import de.learnlib.oracles.DefaultQuery;
 
+/**
+ * @author Syed Rafiul Hussain, Imtiaz Karim, Abdullah Al Ishtiaq, Omar Chowdhury, and Elisa Bertino *
+ *         Based on the original by Malte Isberner
+ */
 public class ModifiedWMethodEQOracle<A extends UniversalDeterministicAutomaton<?, I, ?, ?, ?> & Output<I, D>, I, D>
 		implements EquivalenceOracle<A, I, D> {
 	public static class DFAModifiedWMethodEQOracle<I> extends ModifiedWMethodEQOracle<DFA<?, I>, I, Boolean>
@@ -72,7 +76,7 @@ public class ModifiedWMethodEQOracle<A extends UniversalDeterministicAutomaton<?
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * de.learnlib.api.EquivalenceOracle#findCounterExample(java.lang.Object,
 	 * java.util.Collection)
@@ -113,7 +117,6 @@ public class ModifiedWMethodEQOracle<A extends UniversalDeterministicAutomaton<?
 				continue;
 			}
 
-			//for(int start = 1; start < maxDepth; start++) {
 				for (List<? extends I> middle : CollectionsUtil.allTuples(inputs, 1, maxDepth)) {
 					wb.append(trans).append(middle);
 					queryWord = wb.toWord();
@@ -164,7 +167,6 @@ public class ModifiedWMethodEQOracle<A extends UniversalDeterministicAutomaton<?
 						}
 					}
 				}
-			//}
 		}
 
 		return null;

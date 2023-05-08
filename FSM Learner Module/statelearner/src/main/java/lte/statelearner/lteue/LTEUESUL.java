@@ -21,6 +21,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import net.automatalib.words.Word;
 import net.automatalib.words.impl.SimpleAlphabet;
@@ -34,74 +35,39 @@ public class LTEUESUL implements StateLearnerSUL<String, String> {
 	LTEUEConfig config;
 	SimpleAlphabet<String> alphabet;
 	ArrayList<String> output_symbols;
-
-	/// removed for connecting with the sample adapter in open-source version
-	//Socket mme_socket, enodeb_socket, ue_socket;
-	//BufferedWriter mme_out, enodeb_out, ue_out;
-	//BufferedReader mme_in, enodeb_in, ue_in;
-
-	Socket adapter_socket;
-	BufferedWriter adapter_out;
-	BufferedReader adapter_in;
-
-
+	Socket mme_socket, enodeb_socket, ue_socket;
+	BufferedWriter mme_out, enodeb_out, ue_out;
+	BufferedReader mme_in, enodeb_in, ue_in;
+	int reboot_count = 0;
 	int enable_attach_count = 0;
+	int attach_request_guti_count = 0;
+	int enable_attach_timeout_count = 0;
+	int reset_mme_count = 0;
+	int reset_counter  = 0;
+	boolean sqn_synchronized = false;
+	public String device_name = "huwaeiy5_test";
 	BufferedReader epc_br;
 	BufferedReader enb_br;
 
 	private static final String[] WIN_RUNTIME = {"cmd.exe", "/C"};
 	private static final String[] OS_LINUX_RUNTIME = {"/bin/bash", "-l", "-c"};
 
-	private static final List<String> expectedResults = Arrays.asList(
-			"attach_request",
-			"attach_request_guti",
-			"detach_request",
-			"auth_response",
-			"sm_complete",
-			"sm_reject",
-			"emm_status",
-			"attach_complete",
-			"rrc_reconf_complete",
-			"rrc_sm_complete",
-			"rrc_connection_setup_complete",
-			"identity_response",
-			"auth_MAC_failure",
-			"auth_seq_failure",
-			"auth_failure_noneps",
-			"tau_request",
-			"service_request",
-			"tau_complete",
-			"UL_nas_transport",
-			"null_action",
-			"GUTI_reallocation_complete",
-			"RRC_con_req",
-			"RRC_connection_setup_complete",
-			"RRC_sm_failure",
-			"RRC_sm_complete",
-			"RRC_reconf_complete",
-			"RRC_con_reeest_req",
-			"RRC_mea_report",
-			"RRC_con_reest_complete",
-			"RRC_con_reest_reject",
-			"RRC_ue_info_req",
-			"DONE");
 
+	private static final int WAIT_BEFORE_ENABLE_ATTACH = 5 * 1000; // 5 seconds
 	int unexpected = 0;
 	public LTEUESUL(LTEUEConfig config) throws Exception {
 		this.config = config;
 		alphabet = new SimpleAlphabet<String>(Arrays.asList(config.alphabet.split(" ")));
+
 		System.out.println(config.output_symbols);
 		this.output_symbols = new ArrayList<String>(Arrays.asList(config.output_symbols.split(" ")));
 
 		System.out.println("Starting EPC & eNodeB");
 		System.out.println("Finished starting up EPC & eNodeB");
 
-		/// removed for connecting with the sample adapter in open-source version
-		// init_epc_enb_con();
-		// init_ue_con();
-		
-		init_adapter_con();
-		System.out.println("Done with initializing the connection with Adapter");
+		init_epc_enb_con();
+		init_ue_con();
+		System.out.println("Done with initializing the connection with UE, eNodeB, and EPC");
 
 	}
 
@@ -112,7 +78,6 @@ public class LTEUESUL implements StateLearnerSUL<String, String> {
 	public ArrayList<String> getOutputSymbols() {
 		return output_symbols;
 	}
-
 
 	public String queryToString(Word<String> query) {
 		StringBuilder builder = new StringBuilder();
@@ -142,16 +107,17 @@ public class LTEUESUL implements StateLearnerSUL<String, String> {
 	}
 
 	public void post() {
+		System.out.println("Counting how many enable_attach: "+how_many_enable_attach);
 		how_many_enable_attach = 0;
 		enable_attach_flag = 0;
 		recevied_before_enable_attach = 0;
 	}
 	int recevied_before_enable_attach = 0;
 	int how_many_enable_attach = 0;
+	int flag_for_device = 0 ;
 	int enable_attach_flag = 0;
-
-
 	public String step(String symbol) {
+		int mme_rrc = 0;
 		try {
 			sleep(50); //50 milliseconds
 		} catch (Exception e) {
@@ -160,21 +126,93 @@ public class LTEUESUL implements StateLearnerSUL<String, String> {
 
 		String result = "";
 		String result_mme = "";
+		String attach_result = "";
+		String result_for_ue = "";
+		try {
 
-		// removed for open-source
-		// String attach_result = "";
-		// String result_for_ue = "";
+			if (symbol.startsWith("enable_attach")) {
+				enable_attach_flag = 1;
+				if(how_many_enable_attach > 0 || recevied_before_enable_attach == 1){
+					pre();
+				}
+				recevied_before_enable_attach = 0;
+				how_many_enable_attach++;
+				unexpected = 0;
+				try{
+					while (!result_mme.contains("attach_request")) {
+
+						mme_socket.setSoTimeout(180 * 1000);
+						send_enable_attach();
+						result_mme = mme_in.readLine();
+						if (result_mme.compareTo("") != 0 && result_mme.toCharArray()[0] == ' ') {
+							result_mme = new String(Arrays.copyOfRange(result.getBytes(), 1, result.getBytes().length));
+						}
+
+					}
+					if (!result_mme.contains("attach_request")) {
+						result_mme = mme_in.readLine();
+						if (result_mme.compareTo("") != 0 && result_mme.toCharArray()[0] == ' ') {
+							result_mme = new String(Arrays.copyOfRange(result.getBytes(), 1, result.getBytes().length));
+						}
+					}
+					if (result_mme.contains("attach_request_guti")) {
+						result_mme = "attach_request";
+					}
+					System.out.println(symbol  + "-> MME:" + result_mme);
+					return result_mme;
+				}catch (Exception e1){
+					while (!result_mme.contains("attach_request")) {
+
+						mme_socket.setSoTimeout(180 * 1000);
+						send_enable_attach();
+
+						result_mme = mme_in.readLine();
+						if (result_mme.compareTo("") != 0 && result_mme.toCharArray()[0] == ' ') {
+							result_mme = new String(Arrays.copyOfRange(result.getBytes(), 1, result.getBytes().length));
+						}
+
+
+					}
+					if (!result_mme.contains("attach_request")) {
+						result_mme = mme_in.readLine();
+						if (result_mme.compareTo("") != 0 && result_mme.toCharArray()[0] == ' ') {
+							result_mme = new String(Arrays.copyOfRange(result.getBytes(), 1, result.getBytes().length));
+						}
+					}
+					if (result_mme.contains("attach_request_guti")) {
+						result_mme = "attach_request";
+					}
+					System.out.println(symbol  + "-> MME:" + result_mme);
+					return result_mme;
+				}
+			}
+		} catch (SocketTimeoutException e) {
+			System.out.println("Timeout occured in step for" + symbol);
+			try{
+				mme_out.write(symbol + "\n");
+				mme_out.flush();
+			}catch(Exception e1) {
+				handle_timeout();
+				return "timeout";
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Attempting to restart device and reset srsEPC. Also restarting query.");
+			handle_enb_epc_failure();
+			return "null_action";
+		}
+
 		try {
 			if (symbol.contains("reject")) {
-				adapter_socket.setSoTimeout(5 * 1000);
-				adapter_out.write(symbol + "\n");
-				adapter_out.flush();
+				mme_socket.setSoTimeout(5 * 1000);
+				mme_out.write(symbol + "\n");
+				mme_out.flush();
 
-				result = adapter_in.readLine();
+				result = mme_in.readLine();
 				if (result.compareTo("") != 0 && result.toCharArray()[0] == ' ') {
 					result = new String(Arrays.copyOfRange(result.getBytes(), 1, result.getBytes().length));
 				}
-				result = getClosests(result);
 
 				System.out.println(symbol + "->" + result);
 				return result;
@@ -182,74 +220,380 @@ public class LTEUESUL implements StateLearnerSUL<String, String> {
 		} catch (SocketTimeoutException e) {
 			System.out.println("Timeout occured for " + symbol);
 			System.out.println("Restarting UE and marking following command as null action");
-			// handle_timeout();
+			handle_timeout();
 			return "timeout";
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Attempting to restart device and reset srsEPC. Also restarting query.");
-			// handle_enb_epc_failure();
+			handle_enb_epc_failure();
 			return "null_action";
 		}
 		try {
-			adapter_socket.setSoTimeout(2 * 1000);
-			adapter_out.write(symbol + "\n");
-			adapter_out.flush();
-			result = adapter_in.readLine();
-			if (result.compareTo("") != 0 && result.toCharArray()[0] == ' ') {
-					result = new String(Arrays.copyOfRange(result.getBytes(), 1, result.getBytes().length));
+			recevied_before_enable_attach = 1;
+			if(unexpected == 1){
+				if(symbol.startsWith("enable_tau")){
+					unexpected = 0;
+				}
 			}
-			result = getClosests(result);
+			if(unexpected == 1 || enable_attach_flag == 0){
+				result = "null_action";
+				return result;
+			}
+			if (!symbol.startsWith("enable_attach") && !symbol.contains("reject") && unexpected == 0) {
+				if (symbol.startsWith("RRC_sm_command_protected") || symbol.startsWith("RRC_sm_command_replay") || symbol.startsWith("RRC_sm_command_null_security") || symbol.startsWith("RRC_sm_command_plain_text") || symbol.startsWith("RRC_sm_command_plain_header")) {
+					mme_rrc = 1;
+					enodeb_socket.setSoTimeout(2 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				} else if (symbol.startsWith("RRC_reconf") || symbol.startsWith("RRC_reconf_replay") || symbol.startsWith("RRC_reconf_plain_text")||symbol.startsWith("rrc_reconf_downgraded") ) {
+					mme_rrc = 1;
+					enodeb_socket.setSoTimeout(2 * 1000);
+					enodeb_out.write(symbol + "\n");
+					enodeb_out.flush();
+				}  else if (symbol.startsWith("RRC_con_reest_plain_text") || symbol.startsWith("RRC_con_reest_protected")) {
+					mme_rrc = 1;
+					enodeb_socket.setSoTimeout(2 * 1000);
+					enodeb_out.write(symbol + "\n");
+					enodeb_out.flush();
+				} else if (symbol.startsWith("RRC_connection_setup_plain_text") || symbol.startsWith("RRC_connection_setup_plain_header")) {
+					mme_rrc = 1;
+					enodeb_socket.setSoTimeout(2 * 1000);
+					enodeb_out.write(symbol + "\n");
+					enodeb_out.flush();
+				} else if (symbol.startsWith("RRC_ue_info_req_protected")) {
+					mme_rrc = 1;
+					enodeb_socket.setSoTimeout(2 * 1000);
+					enodeb_out.write(symbol + "\n");
+					enodeb_out.flush();
+				} else if ( symbol.startsWith("attach_accept_protected") || symbol.startsWith("attach_accept_no_integrity") || symbol.startsWith("attach_accept_null_header")  || symbol.startsWith("attach_accept_plain_text") ) {
+					mme_rrc = 0;
+					mme_socket.setSoTimeout(2 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				} else if (symbol.startsWith("auth_request_plain_text") || symbol.startsWith("sm_command_protected")  || symbol.contains("sm_command_replay") || symbol.startsWith("security_mode_command_no_integrity") || symbol.startsWith("sm_command_plain_text") || symbol.startsWith("sm_command_null_security") || symbol.startsWith("sm_command_null_security_replay") || symbol.startsWith("sm_command_plain_header")) {
+					mme_rrc = 0;
+					mme_socket.setSoTimeout(2 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+					
+				} else if (symbol.startsWith("enable_tau")) {
+					mme_rrc = 0;
+					System.out.println("### enable_tau ###");
+					TimeUnit.SECONDS.sleep(8);
+					mme_socket.setSoTimeout(5 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				} else if (symbol.startsWith("enable_RRC_con")) {
+					mme_rrc = 0;
+					System.out.println("### enable_RRC_con ###");
+					TimeUnit.SECONDS.sleep(8);
+					mme_socket.setSoTimeout(5 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				} else if (symbol.startsWith("enable_RRC_reest")) {
+					mme_rrc = 0;
+					System.out.println("### enable_RRC_reest ###");
+					TimeUnit.SECONDS.sleep(8);
+					mme_socket.setSoTimeout(5 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				} else if (symbol.startsWith("enable_RRC_mea_report")) {
+					mme_rrc = 0;
+					System.out.println("### enable_RRC_mea_report ###");
+					TimeUnit.SECONDS.sleep(8);
+					mme_socket.setSoTimeout(5 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				} else if (symbol.startsWith("RRC_release")) {
+					mme_rrc = 0;
+					System.out.println("### RRC RELEASE ###");
+					mme_socket.setSoTimeout(1 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				} else if (symbol.startsWith("paging")) {
+					mme_rrc = 0;
+					System.out.println("### paging ###");
+					mme_socket.setSoTimeout(5 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				} else if (symbol.startsWith("tau_accept_protected") || symbol.startsWith("tau_accept_plain_header")) {
+					mme_rrc = 0;
+					mme_socket.setSoTimeout(2 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				}else if(symbol.contains("identity_request_plain_text") || symbol.contains("identity_request_mac") || symbol.contains("identity_request_wrong_mac") || symbol.contains("identity_request_replay")){
+					mme_rrc = 0;
+					System.out.println("case "+symbol);
+					mme_socket.setSoTimeout(2 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+
+				}else if(symbol.contains("GUTI_reallocation_protected") || symbol.contains("GUTI_reallocation_replay") ){
+					mme_rrc = 0;
+					System.out.println("case "+symbol);
+					mme_socket.setSoTimeout(2 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				} else {
+					mme_rrc = 0;
+					System.out.println("the except case: "+symbol);
+					mme_socket.setSoTimeout(2 * 1000);
+					mme_out.write(symbol + "\n");
+					mme_out.flush();
+				}
+
+				result = "";
+				if(mme_rrc == 0){
+					System.out.println("Reading from MME");
+					result = mme_in.readLine();
+				} else{
+					System.out.println("Reading from RRC");
+					result = enodeb_in.readLine();
+					if (result.contains("rrc_connection_setup_complete")) {
+						System.out.println("Reading again!");
+						result = enodeb_in.readLine();
+					}
+				}
+				if (result.compareTo("") != 0 && result.toCharArray()[0] == ' ') {
+					result = new String(Arrays.copyOfRange(result.getBytes(), 1, result.getBytes().length));
+				}
+				if (result.contains("attach_request") || result.contains("DONE")) {
+					System.out.println("Response of " + symbol + " = Unexpected attach_request");
+					unexpected = 1;
+				}else if (!symbol.startsWith("enable_tau") && result.contains("tau_request")){
+					System.out.println("Unexpected tau_request caught!");
+					unexpected = 1;
+				}else {
+					if (result.contains("emm_status")) {
+						System.out.println("Actual response of " + symbol + " = emm_status");
+						result = "null_action";
+					}
+					if (result.contains("attach_request_guti")) {
+						System.out.println("Actual response of " + symbol + " = attach_request_guti");
+						result = "attach_request";
+					}
+					if (result.contains("detach_request")) {
+						result = "null_action";
+						System.out.println("Actual response of " + symbol + " = detach_request");
+					} else {
+						System.out.println("Response of " + symbol + " = " + result);
+						System.out.println(symbol + "->" + result);
+						return result;
+					}
+				}
+
+
+
+			}
 		} catch (SocketTimeoutException e) {
 			System.out.println("Timeout occured for " + symbol);
 			return "null_action";
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Attempting to restart device and reset srsEPC. Also restarting query.");
-			// handle_enb_epc_failure();
+			handle_enb_epc_failure();
+			return "null_action";
+
+		}
+
+		try {
+			if (result.compareTo("") != 0 && result.toCharArray()[0] == ' ') {
+				result = new String(Arrays.copyOfRange(result.getBytes(), 1, result.getBytes().length));
+				if (result.toLowerCase().startsWith("null_action")) {
+					result = "null_action";
+				}
+				if (result.toLowerCase().startsWith("detach_request")) {
+					result = "null_action";
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Attempting to restart device and reset srsEPC. Also restarting query.");
+			handle_enb_epc_failure();
 			return "null_action";
 		}
+
+		System.out.println("####" + symbol + "/" + result + "####");
+
+
 		return result;
 	}
 
-	/// removed for connecting with the sample adapter in open-source version
-	// private Boolean detect_failure(String log_file) {
-	// 	try (BufferedReader br = new BufferedReader(new FileReader(log_file))) {
-	// 		Boolean error_encountered = false;
-	// 		String line = br.readLine();
-	// 		while (line != null) {
-	// 			line = br.readLine();
-	// 			line = line.toLowerCase();
-	// 			if (line.contains("error") || line.contains("fail")) {
-	// 				System.out.println("ERROR found in log file");
-	// 				System.out.println(line);
-	// 				error_encountered = true;
-	// 				break;
-	// 			}
-	// 		}
+	private Boolean detect_failure(String log_file) {
+		try (BufferedReader br = new BufferedReader(new FileReader(log_file))) {
+			Boolean error_encountered = false;
+			String line = br.readLine();
+			while (line != null) {
+				line = br.readLine();
+				line = line.toLowerCase();
+				if (line.contains("error") || line.contains("fail")) {
+					System.out.println("ERROR found in log file");
+					System.out.println(line);
+					error_encountered = true;
+					break;
+				}
+			}
 
-	// 		return error_encountered;
-	// 	} catch (FileNotFoundException e) {
-	// 		e.printStackTrace();
-	// 		return true;
-	// 	} catch (IOException e) {
-	// 		e.printStackTrace();
-	// 		return true;
-	// 	}
-	// }
+			return error_encountered;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return true;
+		}
+	}
 
 	public void pre() {
+		int flag = 0;
 		try {
+
 			if (!config.combine_query) {
-				// Reset test service
-				System.out.println("Sending symbol: RESET");
-				adapter_out.write("RESET\n");
-				adapter_out.flush();
 
-				// sleep(50);
+				String result = new String("");
+				String result_for_mme = new String("");
+				String result_for_ue = new String("");
+				String result_for_enodeb = new String("");
+				String attach_result = new String("");
+				boolean reset_done = false;
 
-				adapter_in.readLine();
+				attach_request_guti_count = 0;
+				enable_attach_timeout_count = 0;
+				reboot_count = 0;
+				int i = 0;
+				System.out.println("---- Starting RESET ----");
 
-				// String result = reset_ue();
+				do {
+					try {
+
+						if((config.device.equals(device_name) && reset_counter== 0) || !config.device.equals(device_name)){
+                            result_for_ue = reset_ue();
+                        }
+						if(flag == 2){
+							result_for_mme = reset_mme();
+						}
+
+						result = new String("");
+						attach_result = new String("");
+						if (config.device.equals(device_name)) {
+							enodeb_socket.setSoTimeout(120 * 1000);
+							mme_socket.setSoTimeout(120 * 1000);
+						}else{
+							enodeb_socket.setSoTimeout(120 * 1000);
+							mme_socket.setSoTimeout(120 * 1000);
+						}
+
+						if((config.device.equals(device_name) && reset_counter!= 0) || !config.device.equals(device_name)){
+                            System.out.println("Sending enable_attach");
+							send_enable_attach();
+                        }
+
+						result = mme_in.readLine();
+						System.out.println("This is time: " + result);
+						if (result == null || result.compareTo("") == 0 || result.contains("null_action")) {
+							result = mme_in.readLine();
+							continue;
+						}
+						result = new String(Arrays.copyOfRange(result.getBytes(), 1, result.getBytes().length));
+
+						if(result.contains("DONE")){
+						}
+
+						if( result.contains("tau_request")){
+							continue;
+						}
+
+						if (result.contains("detach_request")) {
+							System.out.println("Caught detach_request and sending enable_attach again!");
+
+							pre();
+							return;
+
+						}
+						if(flag == 0) {
+							mme_out.write("attach_reject\n");
+							mme_out.flush();
+							flag = 1;
+							reset_counter++;
+							System.out.println("Passing!!\n");
+							continue;
+						}
+						System.out.println("Response of enable_attach: " + result);
+						mme_socket.setSoTimeout(30 * 1000);
+						int attach_request_guti_counter = 10;
+
+						if (result.contains("attach_request_guti") || result.contains("service_request") || result.contains("tau_request") ||result.contains("detach_request")||result.contains("DONE") ) {
+							attach_request_guti_count++;
+							flag = 1;
+
+							if (attach_request_guti_count < attach_request_guti_counter) {
+								System.out.println("Sending symbol: attach_reject to MME controller to delete the UE context in attach_request_guti");
+								sleep((attach_request_guti_count*1)*10000);
+								result = mme_in.readLine();
+								flag = 2;
+								mme_out.write("attach_reject\n");
+								mme_out.flush();
+							} else if (attach_request_guti_count % attach_request_guti_counter == 0) {
+								handle_enb_epc_failure();
+							} else if (attach_request_guti_count > attach_request_guti_counter) {
+								System.out.println("Sending symbol: auth_reject to MME controller to delete the UE context");
+								mme_out.write("auth_reject\n");
+								mme_out.flush();
+								TimeUnit.SECONDS.sleep(2);
+								reboot_ue();
+							}
+						} else if (result.startsWith("attach_request")) {
+							if (flag == 0) {
+								flag = 1;
+								continue;
+							}
+							attach_request_guti_count = 0;
+
+							if (sqn_synchronized == false) {
+
+								System.out.println("Sending symbol: auth_request to MME controller");
+								mme_out.write("auth_request_plain_text\n");
+								mme_out.flush();
+
+								result = mme_in.readLine();
+								result = new String(Arrays.copyOfRange(result.getBytes(), 1, result.getBytes().length));
+
+								System.out.println("RESULT FROM AUTH REQUEST: " + result);
+
+								if (result.contains("auth")) {
+									System.out.println("Received " + result + ". Synched the SQN value");
+									sqn_synchronized = true;
+									reset_done = true;
+									break;
+								}else{
+									i++;
+									System.out.println("Sleeping for some Seconds");
+									TimeUnit.SECONDS.sleep(i);
+								}
+							} else if (sqn_synchronized == true) {
+								reset_done = true;
+								break;
+							}
+
+						}
+					} catch (SocketTimeoutException e) {
+						enable_attach_timeout_count++;
+						System.out.println("Timeout occured for enable_attach");
+						System.out.println("Sleeping for a while...");
+						sleep(enable_attach_timeout_count * 1 * 1000);
+						pre();
+						return;
+					}
+				} while (reset_done == false);
+
+				result = reset_mme();
+				if (result.contains("attach_request_guti")) {
+				}
+				if(!config.device.equals(device_name)){
+					result = reset_ue();
+				}
+				System.out.println("---- RESET DONE ----");
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -257,440 +601,188 @@ public class LTEUESUL implements StateLearnerSUL<String, String> {
 		}
 	}
 
-
 	public boolean post_query_check() throws InterruptedException {
 		return true;
 	}
 
-	/// removed for connecting with the sample adapter in open-source version
-	// public void handle_timeout() {
-	// 	String result = new String("");
-	// 	/*
-	// 	if(enb_alive() == false || mme_alive() == false){
-	// 		if(enb_alive() == false || mme_alive() == false) {
-	// 			handle_enb_epc_failure();
-	// 			return;
-	// 		}
-	// 	}
-	// 	*/
-	// 	try {
-	// 		ue_out.write("ue_reboot\n"); // reboot the UE and turn cellular network ON with 4G LTE
-	// 		ue_out.flush();
-	// 		System.out.println("Sleeping while UE reboots");
-	// 		TimeUnit.SECONDS.sleep(45);
-	// 		result = ue_in.readLine();
-	// 		System.out.println("Result for reboot: " + result);
-	// 	} catch (IOException e) {
-	// 		e.printStackTrace();
-	// 	} catch (InterruptedException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	System.out.println("TIMEOUT HANDLE DONE.");
-
-	// }
-
-	/// removed for connecting with the sample adapter in open-source version
-	// public void is_adb_server_restart_required() {
-	// 	String result = new String("");
-	// 	if (enable_attach_count >= 50) {
-	// 		//ue_socket.setSoTimeout(30*1000);
-	// 		enable_attach_count = 0;
-	// 		try {
-	// 			ue_out.write("adb_server_restart\n");
-	// 			ue_out.flush();
-	// 			result = ue_in.readLine();
-	// 			System.out.println("Result for adb_server_restart: " + result);
-	// 		} catch (IOException e) {
-	// 			e.printStackTrace();
-	// 		}
-	// 	}
-
-	// }
-
-	/// removed for connecting with the sample adapter in open-source version
-	// public void handle_enb_epc_failure() {
-	// 	String result = new String("");
-
-	// 	try {
-	// 		//reboot_ue();
-
-	// 		restart_epc_enb();
-
-
-	// 	} catch (Exception e) {
-	// 		System.out.println("Exception caught while rebooting eNodeB and EPC");
-	// 		System.out.println("Attempting again...");
-	// 		handle_enb_epc_failure();
-	// 	}
-	// 	System.out.println("ENB EPC FAILURE HANDLING DONE.");
-
-	// }
-
-	/**
-	 * Methods to kill and restart srsEPC and srsENB
-	 */
-
-	/// removed for connecting with the sample adapter in open-source version
-	// public void start_epc_enb() {
-	// 	// kill and start the processes
-	// 	try {
-
-	// 		kill_eNodeb();
-	// 		sleep(2 * 1000);
-	// 		kill_EPC();
-	// 		sleep(2 * 1000);
-	// 		start_EPC();
-	// 		sleep(10 * 1000);
-	// 		start_eNodeB();
-	// 		sleep(30 * 1000);
-	// 	} catch (InterruptedException e) {
-	// 		start_epc_enb();
-	// 		e.printStackTrace();
-	// 	} catch (Exception e) {
-	// 		start_epc_enb();
-	// 		e.printStackTrace();
-	// 	}
-	// }
-
-	/// removed for connecting with the sample adapter in open-source version
-	// public void restart_epc_enb() {
-	// 	try {
-
-	// 		mme_out.close();
-	// 		mme_in.close();
-	// 		mme_socket.close();
-
-	// 		enodeb_out.close();
-	// 		enodeb_in.close();
-	// 		enodeb_socket.close();
-
-	// 		sleep(1000);
-
-	// 		start_epc_enb();
-
-	// 		init_epc_enb_con();
-
-	// 		sqn_synchronized = false;
-
-	// 	} catch (UnknownHostException e) {
-	// 		e.printStackTrace();
-	// 	} catch (SocketException e) {
-	// 		e.printStackTrace();
-	// 	} catch (Exception e) {
-	// 		e.printStackTrace();
-	// 	}
-	// }
-
-
-	public void init_adapter_con(){
-		try{
-			// Initialize adapter service
-			System.out.println("Connecting to Adapter...");
-			adapter_socket = new Socket(config.adapter_ip_address, config.adapter_port);
-			adapter_socket.setTcpNoDelay(true);
-			adapter_out = new BufferedWriter(new OutputStreamWriter(adapter_socket.getOutputStream()));
-			adapter_in = new BufferedReader(new InputStreamReader(adapter_socket.getInputStream()));
-			System.out.println("Connected with Adapter.");
+	public void handle_timeout() {
+		String result = new String("");
+		try {
+			ue_out.write("ue_reboot\n");
+			ue_out.flush();
+			System.out.println("Sleeping while UE reboots");
+			TimeUnit.SECONDS.sleep(45);
+			result = ue_in.readLine();
+			System.out.println("Result for reboot: " + result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		catch (Exception e) {
+		System.out.println("TIMEOUT HANDLE DONE.");
+
+	}
+
+	public void is_adb_server_restart_required() {
+		String result = new String("");
+		if (enable_attach_count >= 50) {
+			enable_attach_count = 0;
+			try {
+				ue_out.write("adb_server_restart\n");
+				ue_out.flush();
+				result = ue_in.readLine();
+				System.out.println("Result for adb_server_restart: " + result);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	public void handle_enb_epc_failure() {
+		System.out.println("ENB EPC FAILURE. PLEASE RESTART.");
+		System.exit(1);
+	}
+
+
+	public void init_epc_enb_con() {
+		try {
+			// Initialize test service
+			System.out.println("Connecting to srsEPC...");
+			mme_socket = new Socket(config.mme_controller_ip_address, config.mme_port);
+			mme_socket.setTcpNoDelay(true);
+			mme_out = new BufferedWriter(new OutputStreamWriter(mme_socket.getOutputStream()));
+			mme_in = new BufferedReader(new InputStreamReader(mme_socket.getInputStream()));
+			System.out.println("Connected with srsEPC.");
+
+			System.out.println("Connecting to srsENB...");
+			enodeb_socket = new Socket(config.enodeb_controller_ip_address, config.enodeb_port);
+			enodeb_socket.setTcpNoDelay(true);
+			enodeb_out = new BufferedWriter(new OutputStreamWriter(enodeb_socket.getOutputStream()));
+			enodeb_in = new BufferedReader(new InputStreamReader(enodeb_socket.getInputStream()));
+			System.out.println("Connected with srsENB.");
+
+			String result = new String();
+			try {
+				sleep(2 * 1000);
+				enodeb_out.write("Hello\n");
+				enodeb_out.flush();
+				result = enodeb_in.readLine();
+				System.out.println("Received = " + result);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("ENB EPC FAILURE. PLEASE RESTART.");
+				System.exit(1);
+			}
+			if (result.startsWith("ACK")) {
+				System.out.println("PASSED: Testing the connection between the statelearner and the srsENB");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("ENB EPC FAILURE. PLEASE RESTART.");
+			System.exit(1);
+		}
+		System.out.println("Connected to srsLTE");
+	}
+
+	public void init_ue_con() {
+		try {
+			System.out.println("Connecting to UE...");
+			System.out.println("UE controller IP Address: " + config.ue_controller_ip_address);
+			ue_socket = new Socket(config.ue_controller_ip_address, config.ue_port);
+			ue_socket.setTcpNoDelay(true);
+			System.out.println("Connected to UE");
+
+			System.out.println("Initializing Buffers for UE...");
+			ue_out = new BufferedWriter(new OutputStreamWriter(ue_socket.getOutputStream()));
+			ue_in = new BufferedReader(new InputStreamReader(ue_socket.getInputStream()));
+			System.out.println("Initialized Buffers for UE");
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		catch (SocketException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	public String reset_mme() {
 
-	/// removed for connecting with the sample adapter in open-source version
+		String result = new String("");
+		System.out.println("Sending symbol: RESET to MME controller");
+		try {
+			sleep(1 * 1000);
+			mme_out.write("RESET " + reset_mme_count + "\n");
+			mme_out.flush();
+			result = mme_in.readLine();
+			System.out.println("ACK for RESET_MME: " + result);
+			reset_mme_count++;
+			if (result == null) {
+				return result;
+			}
+			String result1 = result.replaceAll("[^a-zA-Z]", "");
+			System.out.println(result1);
+			if (result1.equalsIgnoreCase("")) {
+				sleep(2000);
+				reset_mme();
+			}
+			if (result1.compareTo("DONE") != 0) {
+				if (result1.compareTo("attachrequest") != 0 || result1.compareTo("attachrequestguti") != 0) {
+					sleep(2000);
+				}
+			}
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 
-// 	public void init_epc_enb_con() {
-// 		try {
-// 			// Initialize test service
-// 			System.out.println("Connecting to srsEPC...");
-// 			mme_socket = new Socket(config.mme_controller_ip_address, config.mme_port);
-// 			mme_socket.setTcpNoDelay(true);
-// 			mme_out = new BufferedWriter(new OutputStreamWriter(mme_socket.getOutputStream()));
-// 			mme_in = new BufferedReader(new InputStreamReader(mme_socket.getInputStream()));
-// 			System.out.println("Connected with srsEPC.");
+	public String reset_ue() {
+		String result = new String("");
+		System.out.println("Sending symbol: RESET to UE controller");
+		try {
+			sleep(1 * 1000);
+			ue_out.write("RESET\n");
+			ue_out.flush();
+			result = ue_in.readLine();
+			System.out.println("ACK for RESET_UE: " + result);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 
-// 			System.out.println("Connecting to srsENB...");
-// 			enodeb_socket = new Socket(config.enodeb_controller_ip_address, config.enodeb_port);
-// 			enodeb_socket.setTcpNoDelay(true);
-// 			enodeb_out = new BufferedWriter(new OutputStreamWriter(enodeb_socket.getOutputStream()));
-// 			enodeb_in = new BufferedReader(new InputStreamReader(enodeb_socket.getInputStream()));
-// 			System.out.println("Connected with srsENB.");
-
-// 			String result = new String();
-// 			try {
-// 				sleep(2 * 1000);
-// 				enodeb_out.write("Hello\n");
-// 				enodeb_out.flush();
-// 				result = enodeb_in.readLine();
-// 				System.out.println("Received = " + result);
-// 			}
-// //			catch (ConnectException e){
-// //				e.printStackTrace();
-// //				start_epc_enb();
-// //				init_epc_enb_con();
-// //			}
-// 			catch (SocketException e) {
-// 				e.printStackTrace();
-// 				start_epc_enb();
-// 				init_epc_enb_con();
-// 			} catch (IOException e) {
-// 				e.printStackTrace();
-// 				start_epc_enb();
-// 				init_epc_enb_con();
-// 			} catch (Exception e) {
-// 				e.printStackTrace();
-// 				start_epc_enb();
-// 				init_epc_enb_con();
-// 			}
-// 			if (result.startsWith("ACK")) {
-// 				System.out.println("PASSED: Testing the connection between the statelearner and the srsENB");
-// 			}
-
-// 		} catch (NullPointerException e) {
-// 			e.printStackTrace();
-// 			start_epc_enb();
-// 			init_epc_enb_con();
-// 		} catch (UnknownHostException e) {
-// 			e.printStackTrace();
-// 			start_epc_enb();
-// 			init_epc_enb_con();
-// 		} catch (ConnectException e) {
-// 			e.printStackTrace();
-// 			start_epc_enb();
-// 			init_epc_enb_con();
-// 		} catch (SocketException e) {
-// 			e.printStackTrace();
-// 			start_epc_enb();
-// 			init_epc_enb_con();
-// 		} catch (Exception e) {
-// 			e.printStackTrace();
-// 			start_epc_enb();
-// 			init_epc_enb_con();
-// 		}
-// 		System.out.println("Connected to srsLTE");
-// 	}
-
-	/// removed for connecting with the sample adapter in open-source version
-
-// 	public void init_ue_con() {
-// 		try {
-// 			System.out.println("Connecting to UE...");
-// 			System.out.println("UE controller IP Address: " + config.ue_controller_ip_address);
-// 			ue_socket = new Socket(config.ue_controller_ip_address, config.ue_port);
-// 			ue_socket.setTcpNoDelay(true);
-// 			//ue_socket.setSoTimeout(180*1000);
-// 			System.out.println("Connected to UE");
-
-// 			System.out.println("Initializing Buffers for UE...");
-// 			ue_out = new BufferedWriter(new OutputStreamWriter(ue_socket.getOutputStream()));
-// 			ue_in = new BufferedReader(new InputStreamReader(ue_socket.getInputStream()));
-// 			System.out.println("Initialized Buffers for UE");
-
-// 		} catch (UnknownHostException e) {
-// 			e.printStackTrace();
-// 		}
-// //		catch (ConnectException e){
-// //			e.printStackTrace();
-// //		}
-// 		catch (SocketException e) {
-// 			e.printStackTrace();
-// 		} catch (Exception e) {
-// 			e.printStackTrace();
-// 		}
-// 	}
-
-	/// removed for connecting with the sample adapter in open-source version
-	// public boolean enb_alive() {
-	// 	String result = "";
-	// 	try {
-	// 		enodeb_socket.setSoTimeout(5 * 1000);
-	// 		enodeb_out.write("Hello\n");
-	// 		enodeb_out.flush();
-	// 		result = enodeb_in.readLine();
-	// 		System.out.println("Received from Hello message in enb alive = " + result);
-	// 		enodeb_socket.setSoTimeout(30 * 1000);
-	// 	} catch (SocketTimeoutException e) {
-	// 		e.printStackTrace();
-	// 		return false;
-	// 	} catch (Exception e) {
-	// 		e.printStackTrace();
-	// 		return false;
-	// 	}
-
-	// 	if (result.contains("ACK")) {
-	// 		System.out.println("PASSED: Testing the connection between the statelearner and the srsENB");
-	// 		return true;
-	// 	} else {
-	// 		System.out.println("FAILED: Testing the connection between the statelearner and the srsENB");
-	// 		return false;
-	// 	}
-	// }
-
-	/// removed for connecting with the sample adapter in open-source version
-	// public boolean mme_alive() {
-	// 	String result = "";
-	// 	try {
-	// 		mme_socket.setSoTimeout(5 * 1000);
-	// 		mme_out.write("Hello\n");
-	// 		mme_out.flush();
-	// 		result = mme_in.readLine();
-	// 		System.out.println("Received from Hello message in mme alive = " + result);
-	// 		mme_socket.setSoTimeout(30 * 1000);
-
-	// 	} catch (SocketTimeoutException e) {
-	// 		e.printStackTrace();
-	// 		return false;
-	// 	} catch (Exception e) {
-	// 		e.printStackTrace();
-	// 		return false;
-	// 	}
-
-	// 	if (result.contains("ACK")) {
-	// 		System.out.println("PASSED: Testing the connection between the statelearner and the srsEPC");
-	// 		return true;
-	// 	} else {
-	// 		System.out.println("FAILED: Testing the connection between the statelearner and the srsEPC");
-	// 		//return true;
-	// 		return false;
-	// 	}
-	// }
-
-
-	/// removed for connecting with the sample adapter in open-source version
-	// public String reset_mme() {
-
-	// 	String result = new String("");
-	// 	System.out.println("Sending symbol: RESET to MME controller");
-	// 	try {
-	// 		sleep(1 * 1000);
-	// 		mme_out.write("RESET " + reset_mme_count + "\n");
-	// 		mme_out.flush();
-	// 		result = mme_in.readLine();
-	// 		System.out.println("ACK for RESET_MME: " + result);
-	// 		reset_mme_count++;
-	// 		if (result == null) {
-	// 			return result;
-	// 		}
-	// 		String result1 = result.replaceAll("[^a-zA-Z]", "");
-	// 		System.out.println(result1);
-	// 		if (result == null) {
-	// 			sleep(2000);
-	// 			reset_mme();
-	// 		}
-	// 		if (result1.compareTo("DONE") != 0) {
-	// 			//System.out.println(result.compareTo("DONE"));
-	// 			System.out.println("$$$$$$$$$$$$$$$$IK$$$$$$$$$$$$$$$$$$$$");
-	// 			if (result1.compareTo("attachrequest") != 0 || result1.compareTo("attachrequestguti") != 0) {
-	// 				//send_enable_attach();
-	// 				sleep(2000);
-	// 			}
-	// 			//sleep(1000);
-	// 		}
-	// 		//sleep(2*1000);
-	// 	} catch (SocketException e) {
-	// 		e.printStackTrace();
-	// 	} catch (IOException e) {
-	// 		e.printStackTrace();
-	// 	}/*catch(InterruptedException e){
-    //         e.printStackTrace();
-    //     }*/ catch (Exception e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	/*
-	// 	try {
-	// 		result = result.replaceAll("[^a-zA-Z]","");
-	// 		System.out.println(result);
-	// 		if (result.compareTo("DONE") != 0) {
-	// 			//System.out.println(result.compareTo("DONE"));
-	// 			System.out.println("$$$$$$$$$$$$$$$$IK$$$$$$$$$$$$$$$$$$$$");
-	// 			//sleep(2000);
-	// 		}
-	// 	}catch (Exception e){
-	// 		System.out.println("Howcome man!!");
-	// 	}*/
-	// 	return result;
-	// }
-
-	/// removed for connecting with the sample adapter in open-source version
-	// public String reset_ue() {
-	// 	String result = new String("");
-	// 	System.out.println("Sending symbol: RESET to UE controller");
-	// 	try {
-	// 		sleep(1 * 1000);
-	// 		adapter_out.write("RESET\n");
-	// 		adapter_out.flush();
-	// 		// result = adapter_in.readLine();
-	// 		// System.out.println("ACK for RESET_UE: " + result);
-	// 	} catch (SocketException e) {
-	// 		e.printStackTrace();
-	// 	} catch (IOException e) {
-	// 		e.printStackTrace();
-	// 	}/*catch(InterruptedException e){
-    //         e.printStackTrace();
-    //     }*/ catch (Exception e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	return result;
-	// }
-
-
-	/// removed for connecting with the sample adapter in open-source version
-	// public void send_sim_card_reset() {
-
-	// 	try {
-	// 		sleep(2000);
-	// 		System.out.println("Sending symbol: SIM_CARD_RESET to UE controller");
-	// 		enable_attach_count++;
-	// 		ue_out.write("sim_card_reset\n");
-	// 		ue_out.flush();
-	// 		String result = new String("");
-	// 		enable_attach_count++;
-	// 		result = ue_in.readLine();
-	// 		System.out.println("Result for sim_card_reset: " + result);
-	// 		if (!result.contains("DONE")) {
-	// 			send_sim_card_reset();
-	// 		}
-
-
-	// 	} /*catch (InterruptedException e) {
-    //         e.printStackTrace();
-    //     }*/ catch (SocketException e) {
-	// 		e.printStackTrace();
-	// 	} catch (IOException e) {
-	// 		e.printStackTrace();
-	// 	} catch (Exception e) {
-	// 		e.printStackTrace();
-	// 	}
-	// }
 
 	public void send_enable_attach() {
 
 		try {
-			// sleep(1000);
-			// String result = new String("");
-//            do {
-//                mme_out.write("enable_attach\n");
-//                mme_out.flush();
-//                result = mme_in.readLine();
-//                System.out.println("MME's ACK for enable_attach: " + result);
-//            } while (!result.contains("DONE"));
+			sleep(1000);
+			String result = new String("");
 
-			//sleep(1000);
 			System.out.println("Sending symbol: enable_attach to UE controller");
 			enable_attach_count++;
-			adapter_out.write("enable_attach\n");
-			adapter_out.flush();
+			ue_out.write("enable_attach\n");
+			ue_out.flush();
 
-			// enable_attach_count++;
-			// result = ue_in.readLine();
-			// System.out.println("UE controller's ACK for enable_attach: " + result);
-			// if (!result.contains("DONE")) {
-			// 	send_enable_attach();
+			enable_attach_count++;
+			result = ue_in.readLine();
+			System.out.println("UE controller's ACK for enable_attach: " + result);
+			if (!result.contains("DONE")) {
+				send_enable_attach();
 
-			// }
-
-
+			}
 		} catch (SocketException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -701,188 +793,26 @@ public class LTEUESUL implements StateLearnerSUL<String, String> {
 
 	}
 
-	/// removed for connecting with the sample adapter in open-source version
-	// public String reboot_ue() {
-	// 	System.out.println("Sending REBOOT_UE command to UE_CONTROLLER");
-	// 	String result = new String("");
-	// 	try {
-	// 		ue_out.write("ue_reboot\n"); // reboot the UE and turn cellular network ON with 4G LTE
-	// 		ue_out.flush();
-	// 		System.out.println("Waiting for the response from UE .... ");
-	// 		result = ue_in.readLine();
-	// 		System.out.println("UE's ACK for REBOOT: " + result);
-
-	// 	} catch (SocketException e) {
-	// 		e.printStackTrace();
-	// 	} catch (IOException e) {
-	// 		e.printStackTrace();
-	// 	} catch (Exception e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	return result;
-	// }
-
-	/// removed for connecting with the sample adapter in open-source version
-//	public String restart_ue_adb_server() {
-//		System.out.println("Sending adb restart-server command to UE_CONTROLLER");
-//		String result = new String("");
-//		try {
-//			//sleep(2000);
-//			ue_out.write("adb_server_restart\n");
-//			ue_out.flush();
-//			result = ue_in.readLine();
-//			System.out.println("Result for adb_server_restart: " + result);
-//		} catch (SocketException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return result;
-//	}
-
-	/// removed for connecting with the sample adapter in open-source version
-//	public static void start_eNodeB() {
-//
-//		runProcess(false, "src/start_enb.sh");
-//	}
-
-	/// removed for connecting with the sample adapter in open-source version
-//	public static void start_EPC() {
-//
-//		runProcess(false, "src/start_epc.sh");
-//
-//	}
-
-	/// removed for connecting with the sample adapter in open-source version
-//	public static void kill_eNodeb() {
-//		runProcess(false, "src/kill_enb.sh");
-//	}
-
-	/// removed for connecting with the sample adapter in open-source version
-//	public static void kill_EPC() {
-//		runProcess(false, "src/kill_epc.sh");
-//	}
-
-	/// removed for connecting with the sample adapter in open-source version
-	
-	// public void kill_process(String path, String nameOfProcess) {
-	// 	ProcessBuilder pb = new ProcessBuilder(path);
-	// 	Process p;
-	// 	try {
-	// 		p = pb.start();
-	// 	} catch (IOException e) {
-	// 		e.printStackTrace();
-	// 	}
-
-	// 	System.out.println("Killed " + nameOfProcess);
-	// 	System.out.println("Waiting a second");
-	// 	try {
-	// 		TimeUnit.SECONDS.sleep(2);
-	// 	} catch (InterruptedException e) {
-	// 		e.printStackTrace();
-	// 	}
-
-	// 	String line;
-	// 	try {
-	// 		Process temp = Runtime.getRuntime().exec("pidof " + nameOfProcess);
-	// 		BufferedReader input = new BufferedReader(new InputStreamReader(temp.getInputStream()));
-	// 		line = input.readLine();
-	// 		if (line != null) {
-	// 			System.out.println("ERROR: " + nameOfProcess + " is still running after invoking kill script");
-	// 			System.out.println("Attempting termination again...");
-	// 			kill_process(path, nameOfProcess);
-	// 		}
-	// 	} catch (Exception e) {
-	// 		e.printStackTrace();
-	// 	}
-
-	// 	System.out.println(nameOfProcess + " has been killed");
-	// }
-
-	/// removed for connecting with the sample adapter in open-source version
-	// private void start_process(String path, String nameOfProcess) {
-	// 	ProcessBuilder pb = new ProcessBuilder(path);
-	// 	Process p;
-	// 	try {
-	// 		p = pb.start();
-	// 		System.out.println(nameOfProcess + " process has started");
-	// 		System.out.println("Waiting a second");
-	// 		TimeUnit.SECONDS.sleep(2);
-	// 	} catch (IOException e) {
-	// 		System.out.println("IO Exception");
-	// 		System.out.println("ERROR: " + nameOfProcess + " is not running after invoking script");
-	// 		System.out.println("Attempting again...");
-	// 		start_process(path, nameOfProcess);
-	// 		e.printStackTrace();
-	// 	} catch (InterruptedException e) {
-	// 		System.out.println("Timer Exception");
-	// 		System.out.println("ERROR: " + nameOfProcess + " is not running after invoking script");
-	// 		System.out.println("Attempting again...");
-	// 		start_process(path, nameOfProcess);
-	// 		e.printStackTrace();
-	// 	}
-
-
-	// 	String line;
-	// 	try {
-	// 		Process temp = Runtime.getRuntime().exec("pidof " + nameOfProcess);
-	// 		BufferedReader input = new BufferedReader(new InputStreamReader(temp.getInputStream()));
-
-	// 		line = input.readLine();
-	// 		if (line == null) {
-	// 			System.out.println("ERROR: " + nameOfProcess + " is not running after invoking script");
-	// 			System.out.println("Attempting again...");
-	// 			start_process(path, nameOfProcess);
-	// 		}
-	// 	} catch (IOException e) {
-	// 		e.printStackTrace();
-	// 	}
-
-	// 	System.out.println(nameOfProcess + " has started...");
-	// }
-
-	public static void runProcess(boolean isWin, String... command) {
-		System.out.print("command to run: ");
-		for (String s : command) {
-			System.out.print(s);
-		}
-		System.out.print("\n");
-		String[] allCommand = null;
+	public String reboot_ue() {
+		System.out.println("Sending REBOOT_UE command to UE_CONTROLLER");
+		String result = new String("");
 		try {
-			if (isWin) {
-				allCommand = concat(WIN_RUNTIME, command);
-			} else {
-				allCommand = concat(OS_LINUX_RUNTIME, command);
-			}
-			ProcessBuilder pb = new ProcessBuilder(allCommand);
-			pb.redirectErrorStream(true);
+			ue_out.write("ue_reboot\n"); // reboot the UE and turn cellular network ON with 4G LTE
+			ue_out.flush();
+			System.out.println("Waiting for the response from UE .... ");
+			result = ue_in.readLine();
+			System.out.println("UE's ACK for REBOOT: " + result);
 
-			Process p = pb.start();
-			//			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			//			String _temp = null;
-			//			String line = new String("");
-			//			while ((_temp = in.readLine()) != null) {
-			//				System.out.println("temp line: " + _temp);
-			//
-			//				//line += _temp + "\n";
-			//			}
-			//            System.out.println("result after command: " + line);
-
-			return;
-
+		} catch (SocketException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("ERROR: " + command + " is not running after invoking script");
-			System.out.println("Attempting again...");
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return;
 		}
-
-		System.out.println("SUCCESS: " + command + " is running");
+		return result;
 	}
+
 
 	private static <T> T[] concat(T[] first, T[] second) {
 		T[] result = Arrays.copyOf(first, first.length + second.length);
@@ -912,23 +842,5 @@ public class LTEUESUL implements StateLearnerSUL<String, String> {
 		return distance[lhs.length()][rhs.length()];
 	}
 
-	public String getClosests(String result) {
-		if (expectedResults.contains(result)) {
-			return result;
-		}
 
-		int minDistance = Integer.MAX_VALUE;
-		String correctWord = null;
-
-
-		for (String word : expectedResults) {
-			int distance = computeLevenshteinDistance(result, word);
-
-			if (distance < minDistance) {
-				correctWord = word;
-				minDistance = distance;
-			}
-		}
-		return correctWord;
-	}
 }

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/stateLearner.iml" filepath="$PROJECT_DIR$/stateLearner.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/statelearner.iml" filepath="$PROJECT_DIR$/.idea/statelearner.iml" />
-    </modules>
-  </component>
-</project>

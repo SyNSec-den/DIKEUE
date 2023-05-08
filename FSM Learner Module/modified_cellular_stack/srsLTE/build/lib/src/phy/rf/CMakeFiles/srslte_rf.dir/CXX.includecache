@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../lib/include/srslte/config.h
+
+../lib/include/srslte/phy/rf/rf.h
+sys/time.h
+-
+stdbool.h
+-
+stdint.h
+-
+pthread.h
+-
+srslte/config.h
+../lib/include/srslte/phy/rf/srslte/config.h
+
+/home/cyber2slab/LTEUE-State-Fuzzing/FSM_Learner_Module/modified_cellular_stack/srsLTE/lib/src/phy/rf/uhd_c_api.cpp
+uhd.h
+-
+uhd/usrp/multi_usrp.hpp
+-
+srslte/phy/rf/rf.h
+/home/cyber2slab/LTEUE-State-Fuzzing/FSM_Learner_Module/modified_cellular_stack/srsLTE/lib/src/phy/rf/srslte/phy/rf/rf.h
+uhd_c_api.h
+/home/cyber2slab/LTEUE-State-Fuzzing/FSM_Learner_Module/modified_cellular_stack/srsLTE/lib/src/phy/rf/uhd_c_api.h
+
+/home/cyber2slab/LTEUE-State-Fuzzing/FSM_Learner_Module/modified_cellular_stack/srsLTE/lib/src/phy/rf/uhd_c_api.h
+uhd.h
+-
+srslte/config.h
+/home/cyber2slab/LTEUE-State-Fuzzing/FSM_Learner_Module/modified_cellular_stack/srsLTE/lib/src/phy/rf/srslte/config.h
+srslte/phy/rf/rf.h
+/home/cyber2slab/LTEUE-State-Fuzzing/FSM_Learner_Module/modified_cellular_stack/srsLTE/lib/src/phy/rf/srslte/phy/rf/rf.h
+

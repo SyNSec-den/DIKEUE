@@ -1,5 +1,5 @@
 /*
- *  Authors: Imtiaz Karim, Syed Rafiul Hussain, Abdullah Al Ishtiaq
+ *  Modified by Imtiaz Karim, Syed Rafiul Hussain, Abdullah Al Ishtiaq
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -52,40 +52,6 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 
 	ArrayList <String> output_symbols = null;
 	HashMap<String, Boolean> output_complete = new HashMap<String, Boolean>();
-
-	private final String[] expectedResults = {
-			"attach_request",
-			"attach_request_guti",
-			"detach_request",
-			"auth_response",
-			"sm_complete",
-			"sm_reject",
-			"emm_status",
-			"attach_complete",
-			"rrc_reconf_complete",
-			"rrc_sm_complete",
-			"rrc_connection_setup_complete",
-			"identity_response",
-			"auth_MAC_failure",
-			"auth_seq_failure",
-			"auth_failure_noneps",
-			"tau_request",
-			"service_request",
-			"tau_complete",
-			"UL_nas_transport",
-			"null_action",
-			"GUTI_reallocation_complete",
-			"RRC_con_req",
-			"RRC_connection_setup_complete",
-			"RRC_sm_failure",
-			"RRC_sm_complete",
-			"RRC_reconf_complete",
-			"RRC_con_reeest_req",
-			"RRC_mea_resport",
-			"RRC_con_reest_complete",
-			"RRC_con_reest_reject",
-			"RRC_ue_info_req",
-			"DONE"};
 
     public LogOracle(StateLearnerSUL<I, D> sul, LearnLogger logger, boolean combine_query) {
 		try {
@@ -172,28 +138,6 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 		return distance[lhs.length()][rhs.length()];
 	}
 
-	public String getClosests(String result) {
-		//System.out.println("Getting closest of " + result);
-
-		if (Arrays.asList(expectedResults).contains(result)) {
-			return result;
-		}
-
-		int minDistance = Integer.MAX_VALUE;
-		String correctWord = null;
-
-		for (String word: Arrays.asList(expectedResults)) {
-			int distance = computeLevenshteinDistance(result, word);
-
-			if (distance < minDistance) {
-				correctWord = word;
-				minDistance = distance;
-			}
-		}
-
-		return correctWord;
-	}
-
 	public boolean checkComplete(String result){
 		if(result == null){
 			return false;
@@ -247,7 +191,6 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
     		WordBuilder<D> wbSuffix = new WordBuilder<>(suffix.length());
 
 			String query = prefix.toString() + "|" + suffix.toString();
-			//System.out.println("QUERY: " + query);
 			String response = learning_resumer.query_resumer(query, prefLen);
 			this.checkComplete(response);
 
@@ -276,9 +219,6 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 						ctr++;
 					}
 
-					//System.out.println("Loaded from query: "+response);
-					//logger.logQuery("[" + prefix.toString() + " | " + suffix.toString() + " / " + wbPrefix.toWord().toString() + " | " + wbSuffix.toWord().toString() + "]");
-
 					responseWordList.add(wbSuffix.toWord());
 					responseToStringList.add(wbSuffix.toWord().toString());
 					prefixToStringList.add(wbPrefix.toWord());
@@ -294,8 +234,8 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 
     	}
 
-		// Only executes when the query has not been previously explored
-		// ,an error occurred while loading the result from the resumer
+		// Only executes when the query has not been previously explored,
+		// an error occurred while loading the result from the resumer
 		// or resumer is inactive
 		if (!resumed || !config.resume_learning_active) {
 			// If the resumer is active then display a message to let
@@ -314,7 +254,7 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 			int consistent_counter;
 
 			for (int i = 0; i < num_of_repeated_queries ; i++) {
-				Boolean time_out_occured_in_enable_attach = false;
+				Boolean time_out_occured_in_enable_s1 = false;
 
 				WordBuilder<D> wbTempPrefix;
 				WordBuilder<D> wbTempSuffix;
@@ -360,23 +300,17 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 
 							current_result += " " + result;
 							current_result = current_result.trim();
-							//System.out.println("Current Query = " + current_query);
 							String[] split = current_query.split("\\s+");
 							prefix_len_flag = split.length;
 							first = split[0];
-							//System.out.println("Prefix length " + prefix_len_flag);
 
 							if (config.cache_active) {
 								// Looks up the current on going query to detect early inconsistency
 								//System.out.println("Cache active!");
 								String result_in_cache = cache.query_cache(current_query);
 								this.checkComplete(result_in_cache);
-								//System.out.println("Current Query: " + current_query);
-								//System.out.println("Obtained Result: " + current_result);
-								//System.out.println("Execpted Result: " + result_in_cache);
 								// If branch that is only executed when an inconsistency has been found
 								if (result_in_cache != null && !current_result.matches(result_in_cache)) {
-									//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 									System.out.println("Inconsistency in prefix, retrying from beginning");
 									System.out.println("Current Query: " + current_query);
 									System.out.println("Obtained Result: " + current_result);
@@ -393,6 +327,7 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 									}
 									consistent_counter++;
 									System.out.println("!!!!!!!!! Consistent counter = " + consistent_counter+ " !!!!!!!!!!!");
+									//incresaedcount = 2;
 								}
 							}
 						}
@@ -403,8 +338,8 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 							if (!consistent)
 								break;
 
-							if (time_out_occured_in_enable_attach) {
-								System.out.println("NULL_ACTION from previous enable_attach timeout");
+							if (time_out_occured_in_enable_s1) {
+								System.out.println("NULL_ACTION from previous enable_s1 timeout");
 								wbTempSuffix.add((D) "null_action");
 								continue;
 							}
@@ -419,22 +354,19 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 
 							// Levensthein Distance to make up for
 							// missing bytes during transmission of result
-							//result = getClosests(result);
 
-							if (result.matches("timeout") && message.matches("enable_attach")) {
-								System.out.println("Time out from SUL step in enable_attach");
-								time_out_occured_in_enable_attach = true;
+							if (result.matches("timeout") && message.matches("enable_s1")) {
+								System.out.println("Time out from SUL step in enable_s1");
+								time_out_occured_in_enable_s1 = true;
 								result = "null_action";
 							}
 
 							wbTempSuffix.add((D) result);
 							current_result_suffix += " " + result;
 							current_result_suffix = current_result_suffix.trim();
-							//System.out.println("Current Query IK= " + current_query_suffix);
 							String[] split = current_query_suffix.split("\\s+");
-							//System.out.println("Current Query 1st IK= " + split[0]);
 
-							if (config.cache_active & prefix_len_flag<2 & !first.equals("enable_attach")) {
+							if (config.cache_active & prefix_len_flag<2 & !first.equals("enable_s1")) {
 								// Looks up the current on going query to detect early inconsistency
 								System.out.println("Cache active! for suffix!");
 								String result_in_cache = cache.query_cache(current_query_suffix);
@@ -444,7 +376,6 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 								this.checkComplete(result_in_cache);
 								// If branch that is only executed when an inconsistency has been found
 								if (result_in_cache != null && !current_result_suffix.matches(result_in_cache)) {
-									//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 									System.out.println("Inconsistency in suffix, retrying from beginning");
 									System.out.println("Current Query Suffix: " + current_query_suffix);
 									System.out.println("Obtained Result Suffix: " + current_result_suffix);
@@ -461,7 +392,6 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 									}
 									consistent_counter++;
 									System.out.println("!!!!!!!!! Consistent counter Suffix = " + consistent_counter+ " !!!!!!!!!!!");
-									//incresaedcount = 2;
 								}
 							}
 							System.out.println("QUERY # " + (i + 1) + " / 3");
@@ -470,6 +400,9 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 
 
 					} finally {
+						if(resumed == false) {
+							String output = "";
+						}
 
 						sul.post();
 					}
@@ -522,23 +455,19 @@ public class LogOracle<I, D> implements MealyMembershipOracle<I,D> {
 				//System.out.println(responseToStringList.get(i));
 	
 		}
-		//System.out.println("[" + prefix.toString() + " | " + suffix.toString() + " / " +
-		//		prefixToStringList.get(responseToStringList.indexOf(mostRepeatedResponse)).toString() + " | " +
-		//		responseWordList.get(responseToStringList.indexOf(mostRepeatedResponse)).toString() + "]");
+
 		if(config.resume_learning_active){
 			String query = prefix.toString() + "|" + suffix.toString();
 			String result = prefixToStringList.get(responseToStringList.indexOf(mostRepeatedResponse)).toString()
 					+ "|" + responseWordList.get(responseToStringList.indexOf(mostRepeatedResponse)).toString();
 			learning_resumer.add_Entry("INFO: [" + query + "/" + result + "]",prefLen);
 			this.checkComplete(result);
-
 		}
 
 		if(config.cache_active){
 			String query = prefix.toString() + "|" + suffix.toString();
 			String result = prefixToStringList.get(responseToStringList.indexOf(mostRepeatedResponse)).toString()
 					+ "|" + responseWordList.get(responseToStringList.indexOf(mostRepeatedResponse)).toString();
-			//cache.add_Entry("INFO: [" + query + "/" + result + "]");
 		}
 
 		return responseWordList.get(responseToStringList.indexOf(mostRepeatedResponse));

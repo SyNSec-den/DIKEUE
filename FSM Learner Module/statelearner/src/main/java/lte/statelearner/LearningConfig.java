@@ -1,5 +1,5 @@
 /*
- *  Authors: Imtiaz Karim, Syed Rafiul Hussain, Abdullah Al Ishtiaq
+ *  Modified by Imtiaz Karim, Syed Rafiul Hussain, Abdullah Al Ishtiaq
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,19 +23,15 @@ import java.util.Properties;
 
 /**
  * Configuration class used for learning parameters
- *
- *  Authors: Imtiaz Karim, Syed Rafiul Hussain, Abdullah Al Ishtiaq
+ * 
+ * @author Syed Rafiul Hussain, Imtiaz Karim, Abdullah Al Ishtiaq, Omar Chowdhury, and Elisa Bertino
  */
 public class LearningConfig {
-	static int TYPE_SMARTCARD = 1;
-	static int TYPE_SOCKET = 2;
-	static int TYPE_TLS = 3;
 	static int TYPE_LTEUE = 4;
-//	static int TYPE_LTEUESIM = 5;	/// removed for connecting with the sample adapter in open-source version
 	
 	protected Properties properties;
 	
-	int type = TYPE_SMARTCARD;
+	int type = TYPE_LTEUE;
 	
 	String output_dir = "output";
 	
@@ -51,8 +47,6 @@ public class LearningConfig {
 	int nr_queries = 100;
 	int seed = 1;
 
-	/// removed for connecting with the sample adapter in open-source version
-//	boolean log_executor_active = false;
 	public String device = null;
 
 	boolean resume_learning_active = false;
@@ -85,17 +79,8 @@ public class LearningConfig {
 			output_dir = properties.getProperty("output_dir");
 		
 		if(properties.getProperty("type") != null) {
-			if(properties.getProperty("type").equalsIgnoreCase("smartcard"))
-				type = TYPE_SMARTCARD;
-			else if(properties.getProperty("type").equalsIgnoreCase("socket"))
-				type = TYPE_SOCKET;
-			else if(properties.getProperty("type").equalsIgnoreCase("tls"))
-				type = TYPE_TLS;
-			else if(properties.getProperty("type").equalsIgnoreCase("lteue"))
+			if(properties.getProperty("type").equalsIgnoreCase("lteue"))
 				type = TYPE_LTEUE;
-			/// removed for connecting with the sample adapter in open-source version
-//			else if(properties.getProperty("type").equalsIgnoreCase("lteuesim"))
-//				type = TYPE_LTEUESIM;
 		}
 		
 		if(properties.getProperty("learning_algorithm").equalsIgnoreCase("lstar") || properties.getProperty("learning_algorithm").equalsIgnoreCase("dhc") || properties.getProperty("learning_algorithm").equalsIgnoreCase("kv") || properties.getProperty("learning_algorithm").equalsIgnoreCase("ttt") || properties.getProperty("learning_algorithm").equalsIgnoreCase("mp") || properties.getProperty("learning_algorithm").equalsIgnoreCase("rs"))
@@ -121,13 +106,6 @@ public class LearningConfig {
 		
 		if(properties.getProperty("seed") != null)
 			seed = Integer.parseInt(properties.getProperty("seed"));
-
-		/// removed for connecting with the sample adapter in open-source version
-//		if(properties.getProperty("log_executor") != null){
-//			String log_executor = properties.getProperty("log_executor");
-//			if (log_executor.matches("true"))
-//				log_executor_active = true;
-//		}
 
 		if(properties.getProperty("resume_learning") != null){
 			String resume_learning = properties.getProperty("resume_learning");

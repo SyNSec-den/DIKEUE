@@ -1,5 +1,5 @@
 /*
- *  Authors: Imtiaz Karim, Syed Rafiul Hussain, Abdullah Al Ishtiaq
+ *  Modified by Imtiaz Karim, Syed Rafiul Hussain, Abdullah Al Ishtiaq
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -51,8 +51,6 @@ import de.learnlib.oracles.DefaultQuery;
 import de.learnlib.oracles.SULOracle;
 import de.learnlib.statistics.Counter;
 import de.learnlib.statistics.SimpleProfiler;
-
-
 import net.automatalib.automata.transout.MealyMachine;
 import net.automatalib.util.graphs.dot.GraphDOT;
 import net.automatalib.words.Word;
@@ -62,7 +60,9 @@ import lte.statelearner.ModifiedWMethodEQOracle.MealyModifiedWMethodEQOracle;
 import lte.statelearner.lteue.LTEUEConfig;
 import lte.statelearner.lteue.LTEUESUL;
 
-
+/**
+ * @author Syed Rafiul Hussain, Imtiaz Karim, Abdullah Al Ishtiaq, Omar Chowdhury, and Elisa Bertino
+ */
 public class Learner {
 	LearningConfig config;
 	boolean combine_query = false;
@@ -96,14 +96,16 @@ public class Learner {
 		
 		LearnLogger log = LearnLogger.getLogger(Learner.class.getSimpleName());
 
-		 if(config.type == LearningConfig.TYPE_LTEUE) {
+		// Check the type of learning we want to do and create corresponding configuration and SUL
+		if(config.type == LearningConfig.TYPE_LTEUE) {
 			log.log(Level.INFO, "Using LTE-UE SUL");
 
-			// Create the LTE-UE System Under Learning (SUL)
 			sul = new LTEUESUL(new LTEUEConfig(config));
-			 alphabet = ((LTEUESUL)sul).getAlphabet();
+			alphabet = ((LTEUESUL)sul).getAlphabet();
 			output_symbols = ((LTEUESUL)sul).getOutputSymbols();
+
 		}
+
 
 		loadLearningAlgorithm(config.learning_algorithm, alphabet, sul);
 		loadEquivalenceAlgorithm(config.eqtest, alphabet, sul);
@@ -112,22 +114,14 @@ public class Learner {
 	
 	public void loadLearningAlgorithm(String algorithm, SimpleAlphabet<String> alphabet, StateLearnerSUL<String, String> sul) throws Exception {
 
-		// Create the membership oracle
-		//memOracle = new SULOracle<String, String>(sul);
-		// Add a logging oracle
 		logMemOracle = new MealyLogOracle<String, String>(sul, LearnLogger.getLogger("learning_queries"), combine_query);
-
 
 		// Count the number of queries actually sent to the SUL
 		statsMemOracle = new MealyCounterOracle<String, String>(logMemOracle, "membership queries to SUL");
 
 
 		// Use cache oracle to prevent double queries to the SUL
-		//cachedMemOracle = MealyCacheOracle.createDAGCacheOracle(alphabet, statsMemOracle);
-        // Count the number of queries to the cache
 		statsCachedMemOracle = new MealyCounterOracle<String, String>(statsMemOracle, "membership queries to cache");
-
-
 
 		// Instantiate the selected learning algorithm
 		switch(algorithm.toLowerCase()) {
@@ -164,9 +158,11 @@ public class Learner {
 	}
 	
 	public void loadEquivalenceAlgorithm(String algorithm, SimpleAlphabet<String> alphabet, StateLearnerSUL<String, String> sul) throws Exception {
-
+		// Add a logging oracle
 		logEqOracle = new MealyLogOracle<String, String>(sul, LearnLogger.getLogger("equivalence_queries"), combine_query);
+		// Add an oracle that counts the number of queries
 		statsEqOracle = new MealyCounterOracle<String, String>(logEqOracle, "equivalence queries to SUL");
+		// Use cache oracle to prevent double queries to the SUL
 		statsCachedEqOracle = new MealyCounterOracle<String, String>(statsEqOracle, "equivalence queries to cache");
 		
 		// Instantiate the selected equivalence algorithm
@@ -216,6 +212,8 @@ public class Learner {
 			// Write outputs
 			writeDotModel(hypothesis, alphabet, config.output_dir + "/hypothesis_" + round.getCount() + ".dot");
 
+
+
 			// Search counter-example
 			SimpleProfiler.start("Searching for counter-example");
 			DefaultQuery<String, Word<String>> counterExample = equivalenceAlgorithm.findCounterExample(hypothesis, alphabet);	
@@ -232,7 +230,6 @@ public class Learner {
 			else {
 				// Counter example found, update hypothesis and continue learning
 				log.logCounterexample("Counter-example found: " + counterExample.toString());
-				//TODO Add more logging
 				round.increment();
 				log.logPhase("Starting round " + round.getCount());
 				
@@ -291,8 +288,6 @@ public class Learner {
 		PrintStream psDotFile = new PrintStream(dotFile);
 		GraphDOT.write(model, alphabet, psDotFile);
 		psDotFile.close();
-		
-		//TODO Check if dot is available
 		
 		// Convert .dot to .pdf
 		Runtime.getRuntime().exec("dot -Tpdf -O " + filename);
