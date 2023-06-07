@@ -71,11 +71,11 @@
 			<artifactId>automata-commons-dotutil</artifactId>
 		</dependency>
 
-    	<dependency>
-      		<groupId>org.xerial</groupId>
-      		<artifactId>sqlite-jdbc</artifactId>
-      		<version>3.7.2</version>
-    	</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.41.2.2</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
