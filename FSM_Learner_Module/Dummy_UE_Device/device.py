@@ -36,7 +36,7 @@ rrc_con_request = False
 state = deregistered  # initial state
 
 while 1:
-    cmd = client.recv(1024).strip()
+    cmd = client.recv(1024).decode('utf-8').strip()
     print("Command recevied: " +cmd)
 
     # print cmd
@@ -546,4 +546,4 @@ while 1:
 
 
     print "CMD = ", cmd, "-> RESPONSE = ", response
-    client.sendall(response)
+     client.sendall(response.encode('utf-8'))
